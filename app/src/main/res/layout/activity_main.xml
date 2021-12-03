@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/main_frag"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_nav"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </FrameLayout>
+
+    <navigation.BottomNavigationContainer
+        android:id="@+id/main_nav"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#ffffff"
+        app:nv_text_styles="@style/bottom_nav_text"
+        app:nv_item_selector="@drawable/checkable_bottom_nav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <navigation.BottomNavigationItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nv_image_src="@drawable/bottom_life_record"
+            app:nv_text="@string/life_record"
+            app:nv_action="@string/action_test"
+            />
+
+        <navigation.BottomNavigationItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nv_image_src="@drawable/bottom_record"
+            app:nv_text="@string/record"
+            app:nv_action="@string/action_record"
+            />
+
+        <navigation.BottomNavigationItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nv_image_src="@drawable/bottom_home"
+            app:nv_text="@string/home"
+            app:nv_action="@string/action_home"
+            />
+
+        <navigation.BottomNavigationItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nv_image_src="@drawable/bottom_calendar"
+            app:nv_text="@string/calendar"
+            app:nv_action="@string/action_calendar"
+            />
+
+        <navigation.BottomNavigationItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nv_image_src="@drawable/bottom_exam"
+            app:nv_text="@string/exam"
+            app:nv_action="@string/action_exam"
+            />
+
+
+    </navigation.BottomNavigationContainer>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

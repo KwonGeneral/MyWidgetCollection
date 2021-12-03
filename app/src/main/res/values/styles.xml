@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="bottom_nav_text" parent="android:TextAppearance">
+        <item name="android:fontFamily">@font/noto_medium</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#333333</item>
+    </style>
+
+    <declare-styleable name="IconButton">
+        <attr name="iconPadding" format="dimension"/>
+    </declare-styleable>
+
+    <style name="upuls_standard_icon_button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/std_point_color</item>
+        <item name="drawableTint">@color/std_point_color</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:background">@drawable/btn_default_uplus_shape</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- LG UPlus -->
+
+    <style name="UPlus.Button.Contained" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textAppearance">@style/UPlus.Button</item>
+        <item name="android:textColor">@color/item_btn_contained_color</item>
+        <item name="drawableTint">@color/item_btn_contained_color</item>
+        <item name="android:background">@drawable/selector_contained_btn</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+    <style name="UPlus.Button.Outlined" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textAppearance">@style/UPlus.Button</item>
+        <item name="android:textColor">@color/item_btn_outlined_color</item>
+        <item name="drawableTint">@color/item_btn_outlined_color</item>
+        <item name="android:background">@drawable/selector_outlined_btn</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+    <style name="UPlus.Button.Text" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textAppearance">@style/UPlus.Button</item>
+        <item name="android:textColor">@color/item_btn_text_color</item>
+        <item name="drawableTint">@color/item_btn_text_color</item>
+        <item name="android:background">@drawable/selector_text_btn</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+    <style name="UPlus.Button.Icon" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textAppearance">@style/UPlus.Button</item>
+        <item name="android:textColor">@color/item_btn_icon_color</item>
+        <item name="drawableTint">@color/item_btn_icon_color</item>
+        <item name="android:background">@drawable/selector_icon_btn</item>
+    </style>
+
+    <style name="UPlus.Headline" parent="Base.TextAppearance.AppCompat.Headline">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">23sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.Title" parent="Base.TextAppearance.AppCompat.Title">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.Subtitle" parent="TextAppearance.AppCompat.SearchResult.Subtitle">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.LargeBody" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.SmallBody" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">@font/noto_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.Button" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.Popup.Button" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.BottomNavigation" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+
+</resources>
