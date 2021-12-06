@@ -44,8 +44,7 @@ class IconButton : AppCompatButton {
         if (null == bounds) {
             bounds = Rect()
         }
-        val typedArray: TypedArray =
-            getContext().obtainStyledAttributes(attrs, R.styleable.IconButton)
+        val typedArray: TypedArray = getContext().obtainStyledAttributes(attrs, R.styleable.IconButton)
         val paddingId: Int = typedArray.getDimensionPixelSize(R.styleable.IconButton_iconPadding, 0)
         setIconPadding(paddingId)
         typedArray.recycle()

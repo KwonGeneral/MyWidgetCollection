@@ -9,7 +9,7 @@ class ScreenViewModel(val context: Context) {
     var screenStatus = MutableLiveData<String>()
 
     init {
-        screenStatus.postValue(ScreenDefine.HOME_FRAGMENT)
+        screenStatus.postValue(ScreenDefine.TODAY_FRAGMENT)
     }
 
     companion object {

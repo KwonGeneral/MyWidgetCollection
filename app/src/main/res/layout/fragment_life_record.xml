@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:padding="30dp"
+    tools:context=".fragment.LifeRecordFragment">
+
+    <TextView
+        android:id="@+id/headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="생활기록부"
+        style="@style/headline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="요약"
+        style="@style/sub_headline"
+        app:layout_constraintTop_toBottomOf="@id/headline"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <navigation.LinearTapContainer
+        android:id="@+id/title_container"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/background_record"
+        app:lt_title_styles="@style/item_title"
+        app:lt_content_styles="@style/item_sub_title"
+        app:lt_item_selector="@drawable/checkable_bottom_nav"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="@id/title"
+        >
+
+<!--        <navigation.LinearTapItem-->
+<!--            android:id="@+id/test_today"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:lt_title="수상"-->
+<!--            app:lt_content="3회"-->
+<!--            app:lt_action="수상"-->
+<!--            />-->
+
+<!--        <navigation.LinearTapItem-->
+<!--            android:id="@+id/test_life_record"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:lt_title="자격증"-->
+<!--            app:lt_content="1개"-->
+<!--            app:lt_action="자격증"-->
+<!--            />-->
+
+<!--        <navigation.LinearTapItem-->
+<!--            android:id="@+id/test_calendar"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:lt_title="봉사활동"-->
+<!--            app:lt_content="22시간"-->
+<!--            app:lt_action="봉사활동"-->
+<!--            />-->
+
+<!--        <navigation.LinearTapItem-->
+<!--            android:id="@+id/test_setting"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:lt_title="석차등급"-->
+<!--            app:lt_content="2등급"-->
+<!--            app:lt_action="석차등급"-->
+<!--            />-->
+
+    </navigation.LinearTapContainer>
+
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/title_container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="100dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/title"-->
+<!--        app:layout_constraintStart_toStartOf="@id/title"-->
+<!--        >-->
+
+<!--        <button.IconButton-->
+<!--            android:id="@+id/awards_btn"-->
+<!--            style="@style/UPlus.Button.Text"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:focusable="true"-->
+<!--            android:focusableInTouchMode="true"-->
+<!--            android:text="수상"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/certification_btn"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            />-->
+
+<!--        <androidx.appcompat.widget.AppCompatTextView-->
+<!--            android:id="@+id/awards_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="@style/item_title"-->
+<!--            android:text="3회"-->
+<!--            app:layout_constraintStart_toStartOf="@id/awards_btn"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/certification_btn"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/awards_btn"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            />-->
+
+<!--        <button.IconButton-->
+<!--            android:id="@+id/certification_btn"-->
+<!--            style="@style/UPlus.Button.Text"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:focusable="true"-->
+<!--            android:focusableInTouchMode="true"-->
+<!--            android:text="자격증"-->
+<!--            app:layout_constraintStart_toEndOf="@id/awards_btn"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/volunteer_work_btn"-->
+<!--            app:layout_constraintTop_toTopOf="@id/awards_btn"-->
+<!--            />-->
+
+<!--        <androidx.appcompat.widget.AppCompatTextView-->
+<!--            android:id="@+id/certification_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="@style/item_title"-->
+<!--            android:text="1개"-->
+<!--            app:layout_constraintStart_toEndOf="@id/awards_btn"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/volunteer_work_btn"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/awards_btn"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            />-->
+
+<!--        <button.IconButton-->
+<!--            android:id="@+id/volunteer_work_btn"-->
+<!--            style="@style/UPlus.Button.Text"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:focusable="true"-->
+<!--            android:focusableInTouchMode="true"-->
+<!--            android:text="봉사활동"-->
+<!--            app:layout_constraintStart_toEndOf="@id/certification_btn"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/rank_btn"-->
+<!--            app:layout_constraintTop_toTopOf="@id/awards_btn"-->
+<!--            />-->
+
+<!--        <androidx.appcompat.widget.AppCompatTextView-->
+<!--            android:id="@+id/volunteer_work_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="@style/item_title"-->
+<!--            android:text="22시간"-->
+<!--            app:layout_constraintStart_toEndOf="@id/certification_btn"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/rank_btn"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/awards_btn"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            />-->
+
+<!--        <button.IconButton-->
+<!--            android:id="@+id/rank_btn"-->
+<!--            style="@style/UPlus.Button.Text"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:focusable="true"-->
+<!--            android:focusableInTouchMode="true"-->
+<!--            android:text="석차등급"-->
+<!--            app:layout_constraintStart_toEndOf="@id/volunteer_work_btn"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@id/awards_btn"-->
+<!--            />-->
+
+<!--        <androidx.appcompat.widget.AppCompatTextView-->
+<!--            android:id="@+id/rank_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="@style/item_title"-->
+<!--            android:text="2등급"-->
+<!--            app:layout_constraintStart_toEndOf="@id/volunteer_work_btn"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/awards_btn"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <LinearLayout
+        android:id="@+id/record_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/title_container"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이력"
+            style="@style/sub_headline"
+            />
+
+        <button.IconButton
+            android:layout_marginStart="20dp"
+            android:id="@+id/item_create_btn"
+            style="@style/UPlus.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="생성" />
+
+        <button.IconButton
+            android:layout_marginStart="20dp"
+            android:id="@+id/item_delete_btn"
+            style="@style/UPlus.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="삭제" />
+
+        <button.IconButton
+            android:layout_marginStart="20dp"
+            android:id="@+id/item_update_btn"
+            style="@style/UPlus.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="수정" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/life_record_recycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/record_container" />
+</androidx.constraintlayout.widget.ConstraintLayout>

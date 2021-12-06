@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Widget Style -->
     <style name="bottom_nav_text" parent="android:TextAppearance">
         <item name="android:fontFamily">@font/noto_medium</item>
         <item name="android:includeFontPadding">false</item>
@@ -11,21 +12,31 @@
         <attr name="iconPadding" format="dimension"/>
     </declare-styleable>
 
-    <style name="upuls_standard_icon_button" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:textColor">@color/std_point_color</item>
-        <item name="drawableTint">@color/std_point_color</item>
-        <item name="android:paddingHorizontal">20dp</item>
-        <item name="android:background">@drawable/btn_default_uplus_shape</item>
-        <item name="iconPadding">10dp</item>
-    </style>
-
     <style name="menu_labels_style">
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <!-- LG UPlus -->
+    <!-- Default -->
+    <style name="headline" parent="UPlus.Headline">
+        <item name="android:textColor">@color/cool_black</item>
+    </style>
+    <style name="sub_headline" parent="UPlus.SubHeadline">
+        <item name="android:textColor">@color/cool_black</item>
+    </style>
 
+    <!-- Record Item -->
+    <style name="item_title" parent="UPlus.Title">
+        <item name="android:textColor">@color/cool_black</item>
+    </style>
+    <style name="item_sub_title" parent="UPlus.Subtitle">
+        <item name="android:textColor">@color/cool_black</item>
+    </style>
+    <style name="item_small_body" parent="UPlus.SmallBody">
+        <item name="android:textColor">@color/cool_black</item>
+    </style>
+
+    <!-- LG UPlus -->
     <style name="UPlus.Button.Contained" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textAppearance">@style/UPlus.Button</item>
         <item name="android:textColor">@color/item_btn_contained_color</item>
@@ -55,6 +66,12 @@
     </style>
 
     <style name="UPlus.Headline" parent="Base.TextAppearance.AppCompat.Headline">
+        <item name="android:fontFamily">@font/noto_bold</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UPlus.SubHeadline" parent="Base.TextAppearance.AppCompat.Headline">
         <item name="android:fontFamily">@font/noto_bold</item>
         <item name="android:textSize">23sp</item>
         <item name="android:textAlignment">center</item>
