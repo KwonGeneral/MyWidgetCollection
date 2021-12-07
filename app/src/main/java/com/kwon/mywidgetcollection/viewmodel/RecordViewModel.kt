@@ -12,6 +12,7 @@ import com.kwon.mywidgetcollection.data.*
 import com.kwon.mywidgetcollection.db.RoomDataBase
 import com.kwon.mywidgetcollection.utils.PagedRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.count
 import navigation.LinearTapContainer
 import navigation.LinearTapItem
 import java.time.LocalDateTime
@@ -22,6 +23,7 @@ class RecordViewModel(val context: Context): ViewModel() {
     var certificationRecordData = MutableLiveData<Flow<PagingData<CertificationRecord>>>()
     var volunteerWorkRecordData = MutableLiveData<Flow<PagingData<VolunteerWorkRecord>>>()
     var rankRecordData = MutableLiveData<Flow<PagingData<RankRecord>>>()
+    var recordData = MutableLiveData<Flow<PagingData<Record>>>()
 
     fun getLinearTapItemList(context: Context): List<LinearTapItem> {
         val list = mutableListOf<LinearTapItem>()
@@ -35,6 +37,16 @@ class RecordViewModel(val context: Context): ViewModel() {
 
     private fun dateTimeFormat(date: LocalDateTime): String {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    }
+
+    fun toRecord(name: String? = "", rank: String? = "", organization_name: String? = "", period: String? =""): Record {
+        return Record(
+            id = null,
+            name = name,
+            rank = rank,
+            organization_name = organization_name,
+            period = period
+        )
     }
 
     fun getAwardsRecord(award_name: String? = "", award_rank: String? = "", award_organization_name: String? = "", award_period: String? = ""): AwardsRecord {

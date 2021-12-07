@@ -20,18 +20,11 @@ class RankRecordAdapter : PagingDataAdapter<RankRecord, RankRecordAdapter.Awards
 
     companion object {
         private val Diff = object : DiffUtil.ItemCallback<RankRecord>() {
-            override fun areItemsTheSame(
-                oldItem: RankRecord,
-                newItem: RankRecord
-            ): Boolean {
+            override fun areItemsTheSame(oldItem: RankRecord, newItem: RankRecord): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(
-                oldItem: RankRecord,
-                newItem: RankRecord
-            ): Boolean =
-                oldItem == newItem
+            override fun areContentsTheSame(oldItem: RankRecord, newItem: RankRecord): Boolean = oldItem == newItem
         }
     }
 

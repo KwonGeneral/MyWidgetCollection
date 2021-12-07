@@ -20,18 +20,11 @@ class AwardsRecordAdapter : PagingDataAdapter<AwardsRecord, AwardsRecordAdapter.
 
     companion object {
         private val Diff = object : DiffUtil.ItemCallback<AwardsRecord>() {
-            override fun areItemsTheSame(
-                oldItem: AwardsRecord,
-                newItem: AwardsRecord
-            ): Boolean {
+            override fun areItemsTheSame(oldItem: AwardsRecord, newItem: AwardsRecord): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(
-                oldItem: AwardsRecord,
-                newItem: AwardsRecord
-            ): Boolean =
-                oldItem == newItem
+            override fun areContentsTheSame(oldItem: AwardsRecord, newItem: AwardsRecord): Boolean = oldItem == newItem
         }
     }
 

@@ -19,18 +19,11 @@ class VolunteerWorkRecordAdapter : PagingDataAdapter<VolunteerWorkRecord, Volunt
 
     companion object {
         private val Diff = object : DiffUtil.ItemCallback<VolunteerWorkRecord>() {
-            override fun areItemsTheSame(
-                oldItem: VolunteerWorkRecord,
-                newItem: VolunteerWorkRecord
-            ): Boolean {
+            override fun areItemsTheSame(oldItem: VolunteerWorkRecord, newItem: VolunteerWorkRecord): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(
-                oldItem: VolunteerWorkRecord,
-                newItem: VolunteerWorkRecord
-            ): Boolean =
-                oldItem == newItem
+            override fun areContentsTheSame(oldItem: VolunteerWorkRecord, newItem: VolunteerWorkRecord): Boolean = oldItem == newItem
         }
     }
 

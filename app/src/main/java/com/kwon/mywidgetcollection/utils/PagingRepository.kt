@@ -2,18 +2,12 @@ package com.kwon.mywidgetcollection.utils
 
 import androidx.paging.*
 import com.kwon.mywidgetcollection.api.AwardsRecordService
-import com.kwon.mywidgetcollection.data.AwardsRecord
-import com.kwon.mywidgetcollection.data.CertificationRecord
-import com.kwon.mywidgetcollection.data.RankRecord
-import com.kwon.mywidgetcollection.data.VolunteerWorkRecord
+import com.kwon.mywidgetcollection.data.*
 import com.kwon.mywidgetcollection.db.RoomDataBase
 import kotlinx.coroutines.flow.Flow
 
 
-class PagedRepository(
-    private val database: RoomDataBase
-) {
-
+class PagedRepository(private val database: RoomDataBase) {
     fun getAwardsRecordPage(): Flow<PagingData<AwardsRecord>> {
         val getAwardsRecordPageSourceFactory = {
             database.awardsRecordService().readByPage()

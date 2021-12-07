@@ -19,18 +19,11 @@ class CertificationRecordAdapter : PagingDataAdapter<CertificationRecord, Certif
 
     companion object {
         private val Diff = object : DiffUtil.ItemCallback<CertificationRecord>() {
-            override fun areItemsTheSame(
-                oldItem: CertificationRecord,
-                newItem: CertificationRecord
-            ): Boolean {
+            override fun areItemsTheSame(oldItem: CertificationRecord, newItem: CertificationRecord): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(
-                oldItem: CertificationRecord,
-                newItem: CertificationRecord
-            ): Boolean =
-                oldItem == newItem
+            override fun areContentsTheSame(oldItem: CertificationRecord, newItem: CertificationRecord): Boolean = oldItem == newItem
         }
     }
 
