@@ -30,7 +30,7 @@
 
 
         <navigation.BottomNavigationItem
-            android:id="@+id/test_today"
+            android:id="@+id/test_schedule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:nv_image_src="@drawable/bottom_record"
@@ -54,6 +54,15 @@
             app:nv_image_src="@drawable/bottom_calendar"
             app:nv_text="@string/calendar"
             app:nv_action="@string/action_calendar"
+            />
+
+        <navigation.BottomNavigationItem
+            android:id="@+id/test_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nv_image_src="@drawable/bookmark"
+            app:nv_text="@string/mode"
+            app:nv_action="@string/action_setting"
             />
 
         <navigation.BottomNavigationItem

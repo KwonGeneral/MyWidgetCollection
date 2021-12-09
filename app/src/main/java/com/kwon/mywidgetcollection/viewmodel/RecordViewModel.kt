@@ -1,29 +1,45 @@
 package com.kwon.mywidgetcollection.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.kwon.mywidgetcollection.data.*
+import com.kwon.mywidgetcollection.adapter.LifeRecordAdapter
+import com.kwon.mywidgetcollection.contains.LifeRecordDefine
+import com.kwon.mywidgetcollection.data.LinearTapItemData
+import com.kwon.mywidgetcollection.entity.*
 import com.kwon.mywidgetcollection.db.RoomDataBase
-import com.kwon.mywidgetcollection.utils.PagedRepository
+import com.kwon.mywidgetcollection.pager.LifeRecordPagingRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.count
-import navigation.LinearTapContainer
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import navigation.LinearTapItem
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class RecordViewModel(val context: Context): ViewModel() {
-    var awardsRecordData = MutableLiveData<Flow<PagingData<AwardsRecord>>>()
-    var certificationRecordData = MutableLiveData<Flow<PagingData<CertificationRecord>>>()
-    var volunteerWorkRecordData = MutableLiveData<Flow<PagingData<VolunteerWorkRecord>>>()
-    var rankRecordData = MutableLiveData<Flow<PagingData<RankRecord>>>()
-    var recordData = MutableLiveData<Flow<PagingData<Record>>>()
+    var recordData = MutableLiveData<Flow<PagingData<LifeRecord>>>()
+    var awardData = MutableLiveData<Flow<PagingData<LifeRecord>>>()
+    var certificationData = MutableLiveData<Flow<PagingData<LifeRecord>>>()
+    var volunteerData = MutableLiveData<Flow<PagingData<LifeRecord>>>()
+    var gradeData = MutableLiveData<Flow<PagingData<LifeRecord>>>()
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        var instance: RecordViewModel? = null
+        fun getInstance(context: Context): RecordViewModel {
+            instance?.let {
+                return it
+            }
+            instance = RecordViewModel(context)
+            return instance!!
+        }
+    }
 
     fun getLinearTapItemList(context: Context): List<LinearTapItem> {
         val list = mutableListOf<LinearTapItem>()
@@ -35,91 +51,47 @@ class RecordViewModel(val context: Context): ViewModel() {
         return list
     }
 
-    private fun dateTimeFormat(date: LocalDateTime): String {
-        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    fun getLifeRecordSearchPage(type:String, sub_type:String, from_date:Long, to_date:Long, count:Int, sort:String) {
+        if(sort.uppercase() == "ASC") {
+            awardData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
+        } else {
+            awardData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
+        }
+
     }
 
-    fun toRecord(name: String? = "", rank: String? = "", organization_name: String? = "", period: String? =""): Record {
-        return Record(
-            id = null,
-            name = name,
-            rank = rank,
-            organization_name = organization_name,
-            period = period
-        )
+    fun getLifeRecordSearch(type:String, sub_type:String, from_date:Long, to_date:Long, count:Int, sort:String): List<LifeRecord>? {
+        return if(sort.uppercase() == "ASC") {
+            RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(type, sub_type, from_date, to_date, count)
+        } else {
+            RoomDataBase.getInstance(context)?.lifeRecordService()?.searchDESC(type, sub_type, from_date, to_date, count)
+        }
     }
 
-    fun getAwardsRecord(award_name: String? = "", award_rank: String? = "", award_organization_name: String? = "", award_period: String? = ""): AwardsRecord {
-        return AwardsRecord(
-            id = null,
-            award_name = award_name,
-            award_rank = award_rank,
-            award_organization_name = award_organization_name,
-            award_period = award_period,
-            created_at = dateTimeFormat(LocalDateTime.now())
-        )
+    fun getLifeRecordByPage(type: String?) {
+        when(type) {
+            LifeRecordDefine.AWARD -> { awardData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getAwardsRecordPage().cachedIn(viewModelScope)) }
+            LifeRecordDefine.CERTIFICATION -> { certificationData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getCertificationRecordPage().cachedIn(viewModelScope)) }
+            LifeRecordDefine.VOLUNTEER -> { volunteerData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getVolunteerRecordPage().cachedIn(viewModelScope)) }
+            LifeRecordDefine.GRADE -> { gradeData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getGradeRecordPage().cachedIn(viewModelScope)) }
+            else -> {
+                recordData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordPage().cachedIn(viewModelScope))
+                awardData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getAwardsRecordPage().cachedIn(viewModelScope))
+                certificationData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getCertificationRecordPage().cachedIn(viewModelScope))
+                volunteerData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getVolunteerRecordPage().cachedIn(viewModelScope))
+                gradeData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getGradeRecordPage().cachedIn(viewModelScope))
+            }
+        }
     }
 
-    fun getCertificationRecord(certification_name: String? = "", certification_organization_name: String? = "", certification_period: String? = ""): CertificationRecord {
-        return CertificationRecord(
-            id = null,
-            certification_name = certification_name,
-            certification_organization_name = certification_organization_name,
-            certification_period = certification_period,
-            created_at = dateTimeFormat(LocalDateTime.now())
-        )
+    fun createLifeRecord(lifeRecord: LifeRecord) {
+        Log.d("TEST", "생성완료! : $lifeRecord")
+        RoomDataBase.getInstance(context)?.lifeRecordService()?.create(lifeRecord)
     }
 
-    fun getVolunteerWorkRecord(volunteer_work_name: String? = "", volunteer_work_organization_name: String? = "", volunteer_work_time: String? = "", volunteer_work_period: String? = "",): VolunteerWorkRecord {
-        return VolunteerWorkRecord(
-            id = null,
-            volunteer_work_name = volunteer_work_name,
-            volunteer_work_organization_name = volunteer_work_organization_name,
-            volunteer_work_time = volunteer_work_time,
-            volunteer_work_period = volunteer_work_period,
-            created_at = dateTimeFormat(LocalDateTime.now())
-        )
-    }
-
-    fun getRankRecord(rank_name: String? = "", rank_semester: String? = "", rank_period: String? = ""): RankRecord {
-        return RankRecord(
-            id = null,
-            rank_name = rank_name,
-            rank_semester = rank_semester,
-            rank_period = rank_period,
-            created_at = dateTimeFormat(LocalDateTime.now())
-        )
-    }
-
-    fun getAwardsRecordByPage(){
-        awardsRecordData.postValue(PagedRepository(RoomDataBase.getInstance(context)!!).getAwardsRecordPage().cachedIn(viewModelScope))
-    }
-
-    fun getCertificationRecordByPage() {
-        certificationRecordData.postValue(PagedRepository(RoomDataBase.getInstance(context)!!).getCertificationRecordPage().cachedIn(viewModelScope))
-    }
-
-    fun getVolunteerWorkRecordByPage() {
-        volunteerWorkRecordData.postValue(PagedRepository(RoomDataBase.getInstance(context)!!).getVolunteerWorkRecordPage().cachedIn(viewModelScope))
-    }
-
-    fun getRankRecordByPage() {
-        rankRecordData.postValue(PagedRepository(RoomDataBase.getInstance(context)!!).getRankRecordPage().cachedIn(viewModelScope))
-    }
-
-    fun createAwardsRecord(awardsRecord: AwardsRecord) {
-        RoomDataBase.getInstance(context)?.awardsRecordService()?.create(awardsRecord)
-    }
-
-    fun createCertificationRecord(certificationRecord: CertificationRecord) {
-        RoomDataBase.getInstance(context)?.certificationRecordService()?.create(certificationRecord)
-    }
-
-    fun createVolunteerWorkRecord(volunteerWorkRecord: VolunteerWorkRecord) {
-        RoomDataBase.getInstance(context)?.volunteerWorkRecordService()?.create(volunteerWorkRecord)
-    }
-
-    fun createRankRecord(rankRecord: RankRecord) {
-        RoomDataBase.getInstance(context)?.rankRecordService()?.create(rankRecord)
+    fun deleteLifeRecord(id: Long?) {
+        id?.let {
+            RoomDataBase.getInstance(context)?.lifeRecordService()?.delete(id)
+        }
     }
 }

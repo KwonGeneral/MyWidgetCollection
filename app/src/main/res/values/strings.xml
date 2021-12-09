@@ -10,12 +10,17 @@
     <string name="today">투데이</string>
     <string name="life_record">생기부</string>
     <string name="calendar">캘린더</string>
+    <string name="mode">멀티모드</string>
     <string name="setting">설정</string>
 
     <string name="action_today">TODAY</string>
     <string name="action_life_record">LIFE_RECORD</string>
     <string name="action_calendar">CALENDAR</string>
+    <string name="action_mode">MODE</string>
     <string name="action_setting">SETTING</string>
 
     <string name="btn">버튼</string>
+
+    <string name="cancel">취소</string>
+    <string name="ok">확인</string>
 </resources>

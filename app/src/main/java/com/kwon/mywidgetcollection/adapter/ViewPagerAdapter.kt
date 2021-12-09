@@ -2,13 +2,12 @@ package com.kwon.mywidgetcollection.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kwon.mywidgetcollection.R
 import kotlinx.android.synthetic.main.list_item_record_pager.view.*
 
-class ViewPagerAdapter(carList: ArrayList<PagingDataAdapter<out Any, out RecyclerView.ViewHolder>>) : RecyclerView.Adapter<ViewPagerAdapter.PagerViewHolder>() {
-    var item = carList
+class ViewPagerAdapter(adapterArrayList: ArrayList<LifeRecordAdapter>) : RecyclerView.Adapter<ViewPagerAdapter.PagerViewHolder>() {
+    var item = adapterArrayList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PagerViewHolder((parent))
 

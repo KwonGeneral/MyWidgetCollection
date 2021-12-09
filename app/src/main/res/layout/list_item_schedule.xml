@@ -23,32 +23,19 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/lr_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="수상한 상 이름"
+                android:id="@+id/lt_title"
                 style="@style/item_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/lr_body"
-                />
-
-            <TextView
-                android:id="@+id/lr_body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="기관명"
-                style="@style/item_small_body"
+                android:text="학교 등교"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lr_title"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/lr_sub_title"
+                android:id="@+id/lt_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="수상한 상 등수"
+                android:text="8:00 ~ 8:30"
                 style="@style/item_sub_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -56,30 +43,5 @@
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/lr_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:backgroundTint="@color/cool_black"
-            android:theme="@style/MyCheckBox"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="10dp"
-            android:visibility="gone"
-            />
-
-<!--        <TextView-->
-<!--            android:id="@+id/period"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="기간"-->
-<!--            style="@style/item_small_body"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/rank"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
