@@ -15,8 +15,11 @@ interface LifeRecordService {
     @Query("SELECT * FROM life_record")
     fun readByPage() : PagingSource<Int, LifeRecord>
 
-    @Query("SELECT * FROM life_record WHERE type = :type")
-    fun searchByType(type: String): PagingSource<Int, LifeRecord>
+    @Query("SELECT * FROM life_record WHERE type = :type ORDER BY id ASC")
+    fun searchByTypeASC(type: String): PagingSource<Int, LifeRecord>
+
+    @Query("SELECT * FROM life_record WHERE type = :type ORDER BY id desc")
+    fun searchByTypeDESC(type: String): PagingSource<Int, LifeRecord>
 
     @Query("SELECT * FROM life_record WHERE title = :title")
     fun searchByTitle(title: String): PagingSource<Int, LifeRecord>

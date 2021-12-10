@@ -13,6 +13,7 @@ import com.kwon.mywidgetcollection.adapter.ScheduleAdapter
 import com.kwon.mywidgetcollection.adapter.SchedulePageAdapter
 import com.kwon.mywidgetcollection.contains.ScheduleDefine
 import com.kwon.mywidgetcollection.data.ScheduleData
+import com.kwon.mywidgetcollection.db.RoomDataBase
 import com.kwon.mywidgetcollection.entity.ScheduleRecord
 import com.kwon.mywidgetcollection.viewmodel.ScheduleViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,6 +45,43 @@ class ScheduleFragment : Fragment() {
         var todoTo:Long = 202107080000
 
         ScheduleViewModel.getInstance(requireContext())?.let { vm ->
+//            ScheduleViewModel.getInstance(requireContext())?.let { vm ->
+//                for(k in 1..300) {
+//                    vm.createScheduleRecord(
+//                        ScheduleData.build(
+//                            ScheduleData.parse(
+//                                ScheduleRecord(
+//                                    type = ScheduleDefine.TODAY,
+//                                    title = "$k 테스트 일정",
+//                                    content = "",
+//                                    from_date = todayFrom,
+//                                    to_date = todayTo,
+//                                    status = 0
+//                                )
+//                            )
+//                        )
+//                    )
+//                    vm.createScheduleRecord(
+//                        ScheduleData.build(
+//                            ScheduleData.parse(
+//                                ScheduleRecord(
+//                                    type = ScheduleDefine.TODO,
+//                                    title = "$k 테스트 할일",
+//                                    content = "",
+//                                    from_date = todoFrom,
+//                                    to_date = todoTo,
+//                                    status = 0
+//                                )
+//                            )
+//                        )
+//                    )
+//                    todayFrom++
+//                    todayTo++
+//                    todoFrom++
+//                    todoTo++
+//                }
+//            }
+
             today_normal_search_btn.setOnClickListener {
                 todo_shuffle.visibility = View.VISIBLE
                 today_shuffle.visibility = View.VISIBLE
@@ -52,20 +90,20 @@ class ScheduleFragment : Fragment() {
                 var todoItem: List<ScheduleRecord>
                 var todoNormalAdapter: ScheduleAdapter? = null
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    todayItem = vm.getScheduleRecordSearch(ScheduleDefine.TODAY, "", 202112090080, 202112120200, 60, "asc")!!
-                    todayNormalAdapter = ScheduleAdapter(requireContext(), ScheduleDefine.TODAY, todayItem)
-                    CoroutineScope(Dispatchers.Main).launch {
-                        today_recycler.adapter = todayNormalAdapter
-                    }
-                }
-                CoroutineScope(Dispatchers.IO).launch {
-                    todoItem = vm.getScheduleRecordSearch(ScheduleDefine.TODO, "", 202102050010, 202107080090, 70, "desc")!!
-                    todoNormalAdapter = ScheduleAdapter(requireContext(), ScheduleDefine.TODAY, todoItem)
-                    CoroutineScope(Dispatchers.Main).launch {
-                        todo_recycler.adapter = todoNormalAdapter
-                    }
-                }
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    todayItem = vm.getScheduleRecordSearch(ScheduleDefine.TODAY, "", 202112090080, 202112120200, 60, "asc")!!
+//                    todayNormalAdapter = ScheduleAdapter(requireContext(), ScheduleDefine.TODAY, todayItem)
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        today_recycler.adapter = todayNormalAdapter
+//                    }
+//                }
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    todoItem = vm.getScheduleRecordSearch(ScheduleDefine.TODO, "", 202102050010, 202107080090, 70, "desc")!!
+//                    todoNormalAdapter = ScheduleAdapter(requireContext(), ScheduleDefine.TODAY, todoItem)
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        todo_recycler.adapter = todoNormalAdapter
+//                    }
+//                }
                 today_shuffle.setOnClickListener {
                     todayNormalAdapter?.let {
                         it.shuffle()
@@ -82,57 +120,20 @@ class ScheduleFragment : Fragment() {
                 today_shuffle.visibility = View.GONE
                 today_recycler.adapter = todayAdapter
                 todo_recycler.adapter = todoAdapter
-                vm.getScheduleRecordSearchPage(ScheduleDefine.TODAY, "", 202112090030, 202112120150, 40, "asc")
-                vm.getScheduleRecordSearchPage(ScheduleDefine.TODO, "", 202102050070, 202107080210, 60, "desc")
+                vm.getScheduleRecordSearchPage(ScheduleDefine.TODAY)
+                vm.getScheduleRecordSearchPage(ScheduleDefine.TODO)
 
-                vm.todayData.observe(viewLifecycleOwner, { data ->
+                vm.todayPagingData.observe(viewLifecycleOwner, { data ->
                     lifecycleScope.launch {
                         data.collectLatest { todayAdapter.submitData(it) }
                     }
                 })
-                vm.todoData.observe(viewLifecycleOwner, { data ->
+                vm.todoPagingData.observe(viewLifecycleOwner, { data ->
                     lifecycleScope.launch {
                         data.collectLatest { todoAdapter.submitData(it) }
                     }
                 })
             }
         }
-
-//        ScheduleViewModel.getInstance(requireContext())?.let { vm ->
-//            for(k in 1..300) {
-//                vm.createScheduleRecord(
-//                    ScheduleData.build(
-//                        ScheduleData.parse(
-//                            ScheduleRecord(
-//                                type = ScheduleDefine.TODAY,
-//                                title = "$k 테스트 일정",
-//                                content = "",
-//                                from_date = todayFrom,
-//                                to_date = todayTo,
-//                                status = 0
-//                            )
-//                        )
-//                    )
-//                )
-//                vm.createScheduleRecord(
-//                    ScheduleData.build(
-//                        ScheduleData.parse(
-//                            ScheduleRecord(
-//                                type = ScheduleDefine.TODO,
-//                                title = "$k 테스트 할일",
-//                                content = "",
-//                                from_date = todoFrom,
-//                                to_date = todoTo,
-//                                status = 0
-//                            )
-//                        )
-//                    )
-//                )
-//                todayFrom++
-//                todayTo++
-//                todoFrom++
-//                todoTo++
-//            }
-//        }
     }
 }
