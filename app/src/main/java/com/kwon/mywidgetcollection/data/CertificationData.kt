@@ -1,10 +1,9 @@
 package com.kwon.mywidgetcollection.data
 
 import com.kwon.mywidgetcollection.entity.LifeRecord
-import com.kwon.mywidgetcollection.utils.DateUtil
-import java.time.LocalDateTime
+import java.util.*
 
-data class CertificationData(var type: String? = "", var sub_type: String? = "", var title: String? = "", var area: String? = "", var time_at: String? = "", var from_date: Long? = 0, var to_date: Long? = 0) {
+data class CertificationData(var type: String? = "", var sub_type: String? = "", var title: String? = "", var area: String? = "", var time_at: Long? = 0, var from_date: Long? = 0, var to_date: Long? = 0) {
     companion object {
         fun parse(lifeRecord: LifeRecord): CertificationData {
             return CertificationData().apply {
@@ -28,7 +27,7 @@ data class CertificationData(var type: String? = "", var sub_type: String? = "",
                 time_at = certificationData.time_at,
                 from_date = certificationData.from_date,
                 to_date = certificationData.to_date,
-                create_at = System.currentTimeMillis()
+                create_at = 0
             )
         }
     }

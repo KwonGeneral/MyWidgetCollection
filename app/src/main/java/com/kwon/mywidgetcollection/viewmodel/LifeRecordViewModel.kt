@@ -1,18 +1,21 @@
 package com.kwon.mywidgetcollection.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.kwon.mywidgetcollection.contains.Define
-import com.kwon.mywidgetcollection.contains.LifeRecordDefine
-import com.kwon.mywidgetcollection.entity.*
+import com.kwon.mywidgetcollection.contains.Default
+import com.kwon.mywidgetcollection.contains.LifeDefine
 import com.kwon.mywidgetcollection.db.RoomDataBase
+import com.kwon.mywidgetcollection.entity.*
+import com.kwon.mywidgetcollection.utils.DateUtil
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
-class LifeRecordViewModel(val context: Context) : ViewModel() {
+class LifeRecordViewModel(val context: Context, var option: LifeSearchOption = LifeSearchOption()) : ViewModel() {
     // PagingData
     var awardPagingData = MutableLiveData<Flow<PagingData<LifeRecord>>>()  // 수상
     var certificationPagingData = MutableLiveData<Flow<PagingData<LifeRecord>>>()  // 자격증
@@ -25,268 +28,150 @@ class LifeRecordViewModel(val context: Context) : ViewModel() {
     var volunteerData = MutableLiveData<List<LifeRecord>>()  // 봉사활동
     var gradeData = MutableLiveData<List<LifeRecord>>()  // 석차등급
 
-    private var currentFocus = MutableLiveData<Int>(0)
-    private var sort: String = ""
-    private var type: String = ""
-    private var subType: String = ""
-    private var fromDate: Long = 0
-    private var toDate: Long = 0
-    private var count: Int = 0
+    data class LifeSearchOption(
+        var sub_type: String = Default.SUB_TYPE,
+        var title: String = Default.EMPTY_STR,
+        var content: String = Default.EMPTY_STR,
+        var area: String = Default.EMPTY_STR,
+        var rank: String = Default.EMPTY_STR,
+        var semester: String = Default.EMPTY_STR,
+        var sort_name: String = Default.SORT_NAME,
+        var count: Int = Default.PAGE_COUNT,
+        var time_at: Long = Default.EMPTY_LONG,
+        var from_date: Long = Default.FROM_DATE,
+        var to_date: Long = Default.TO_DATE,
+        var sortDESC: Boolean = false
+    )
 
-    init {
-        currentFocus.value = 0
+    fun insertLifeRecord(lifeRecord: LifeRecord) {
+        RoomDataBase.getInstance(context)?.lifeRecordService()?.create(lifeRecord)
+        Log.d("TEST", "생성완료 : $lifeRecord")
     }
 
-    // 쉐어드 필요
-    private fun getCurrentFocus(): Int {
-        currentFocus.value?.let {
-            return it
-        }
-        return 0
+    fun deleteLifeRecord(lifeRecord: LifeRecord) {
+        RoomDataBase.getInstance(context)?.lifeRecordService()?.delete(lifeRecord.id!!)
+        Log.d("TEST", "생성완료 : $lifeRecord")
     }
 
-    // 생활기록부에서 사용자의 액션은
-    // 현재 페이지를 전환하는 액션 뿐이다.
-    // 뷰에서는 현재 페이지가 바뀔때마다 한번의 호출로
-    // 다양한 작업을 진행한다.
-    fun setCurrentFocus(currentFocus: Int) {
-        this.currentFocus.value = currentFocus
-        when(currentFocus) {
-//            0 -> {
-//                setType(LifeRecordDefine.AWARD)
-//            }
-//            1 -> {
-//                setType(LifeRecordDefine.CERTIFICATION)
-//            }
-//            2 -> {
-//                setType(LifeRecordDefine.VOLUNTEER)
-//            }
-//            3 -> {
-//                setType(LifeRecordDefine.GRADE)
-//            }
-        }
-    }
-
-    fun getAllRecordList() {
-//        setAwardPagingData()
-//        setCertificationPagingData()
-//        setVolunteerPagingData()
-//        setGradePagingData()
-    }
-
-    private fun getSort(): String {
-        return sort
-    }
-
-    private fun setSort(sort: String) {
-        this.sort = sort
-        when(getType()) {
-            LifeRecordDefine.AWARD -> {
-
+    fun updateAward(t_option: LifeSearchOption = option) {
+        t_option.run {
+            updatePaging(this, LifeDefine.AWARD)?.let {
+                awardPagingData.postValue(it)
             }
-            LifeRecordDefine.CERTIFICATION -> {
-
-            }
-            LifeRecordDefine.VOLUNTEER -> {
-
-            }
-            LifeRecordDefine.GRADE -> {
-
+            updateList(this, LifeDefine.AWARD)?.let {
+                awardData.postValue(it)
             }
         }
     }
 
-    private fun getType(): String {
-        return type
+    fun updateCertification(t_option: LifeSearchOption = option) {
+        t_option.run {
+            updatePaging(this, LifeDefine.CERTIFICATION)?.let {
+                certificationPagingData.postValue(it)
+            }
+            updateList(this, LifeDefine.CERTIFICATION)?.let {
+                certificationData.postValue(it)
+            }
+        }
     }
 
-//    private fun setType(type: String) {
-//        this.type = type
-//        when(type) {
-//            LifeRecordDefine.AWARD -> { setAwardPagingData() }
-//            LifeRecordDefine.CERTIFICATION -> { setCertificationPagingData() }
-//            LifeRecordDefine.VOLUNTEER -> { setVolunteerPagingData() }
-//            LifeRecordDefine.GRADE -> { setGradePagingData() }
-//        }
-//    }
-
-    private fun getSubType(): String {
-        return subType
+    fun updateVolunteer(t_option: LifeSearchOption = option) {
+        t_option.run {
+            updatePaging(this, LifeDefine.VOLUNTEER)?.let {
+                volunteerPagingData.postValue(it)
+            }
+            updateList(this, LifeDefine.VOLUNTEER)?.let {
+                volunteerData.postValue(it)
+            }
+        }
     }
 
-    private fun setSubType(subType: String) {
-        this.subType = subType
+    fun updateGrade(t_option: LifeSearchOption = option) {
+        t_option.run {
+            updatePaging(this, LifeDefine.GRADE)?.let {
+                gradePagingData.postValue(it)
+            }
+            updateList(this, LifeDefine.GRADE)?.let {
+                gradeData.postValue(it)
+            }
+        }
     }
 
-    private fun getFromDate(): Long {
-        return fromDate
+    fun update(t_option: LifeSearchOption = option) {
+        t_option.run {
+            updateAward(this)
+            updateCertification(this)
+            updateVolunteer(this)
+            updateGrade(this)
+        }
     }
 
-    private fun setFromDate(fromDate: Long) {
-        this.fromDate = fromDate
+    private fun updateList(option: LifeSearchOption, type: String): List<LifeRecord>? {
+        option.run {
+            RoomDataBase.getInstance(context)?.lifeRecordService()
+                ?.let { lifeRecordService ->
+                    if (!sortDESC) {
+                        return lifeRecordService.search(
+                            type,
+                            sub_type = sub_type,
+                            from_date = from_date,
+                            to_date = to_date,
+                            sort_name = sort_name,
+                            count = count
+                        )
+                    } else {
+                        return lifeRecordService.searchDESC(
+                            type,
+                            sub_type = sub_type,
+                            from_date = from_date,
+                            to_date = to_date,
+                            sort_name = sort_name,
+                            count = count
+                        )
+                    }
+                }
+        }
+        return null
     }
 
-    private fun getToDate(): Long {
-        return toDate
+    private fun updatePaging(
+        option: LifeSearchOption,
+        type: String
+    ): Flow<PagingData<LifeRecord>>? {
+        option.run {
+            RoomDataBase.getInstance(context)?.lifeRecordService()
+                ?.let { lifeRecordService ->
+                    PagingConfig(pageSize = count, enablePlaceholders = true)?.let { pagingConfig ->
+                        var pagingSourceFactory = {
+                            lifeRecordService.searchByPage(
+                                type,
+                                sub_type = sub_type,
+                                from_date = from_date,
+                                to_date = to_date,
+                                sort_name = sort_name,
+                                count = count
+                            )
+                        }
+                        if (sortDESC) {
+                            pagingSourceFactory = {
+                                lifeRecordService.searchByPageDESC(
+                                    type,
+                                    sub_type = sub_type,
+                                    from_date = from_date,
+                                    to_date = to_date,
+                                    sort_name = sort_name,
+                                    count = count
+                                )
+                            }
+                        }
+
+                        return Pager(
+                            config = pagingConfig,
+                            pagingSourceFactory = pagingSourceFactory
+                        ).flow
+                    }
+                }
+            return null
+        }
     }
-
-    private fun setToDate(toDate: Long) {
-        this.toDate = toDate
-    }
-
-    private fun getCount(): Int {
-        return count
-    }
-
-    private fun setCount(count: Int) {
-        this.count = count
-    }
-
-//    private fun setAwardPagingData() {
-//        awardPagingData.postValue(PagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecord(LifeRecordDefine.AWARD, Define.SORT_ASC).cachedIn(viewModelScope))
-//    }
-//
-//    private fun setAwardPagingData(sort: String) {
-//
-//    }
-//
-//    private fun setCertificationPagingData() {
-//        certificationPagingData.postValue(PagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecord(LifeRecordDefine.CERTIFICATION, Define.SORT_ASC).cachedIn(viewModelScope))
-//    }
-//
-//    private fun setVolunteerPagingData() {
-//        volunteerPagingData.postValue(PagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecord(LifeRecordDefine.VOLUNTEER, Define.SORT_ASC).cachedIn(viewModelScope))
-//    }
-//
-//    private fun setGradePagingData() {
-//        gradePagingData.postValue(PagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecord(LifeRecordDefine.GRADE, Define.SORT_ASC).cachedIn(viewModelScope))
-//    }
-
-    // Todo ===================================================================================
-
-//    private var currentMenu = MutableLiveData<Int>()
-//    init {
-//        currentMenu.value = //쉐어드로드
-//    }
-
-//    fun getCurrentMenuLive():MutableLiveData<Int>
-//    {
-//        return currentMenu
-//    }
-//
-//    fun setCurrentMenu(menu: Int) {
-//        currentMenu.value = menu
-//        //쉐어드 저장
-//    }
-
-//    /**
-//     * 생활기록부 DB Paging3 검색 정렬 & 역정렬 조회
-//     *
-//     * < parameter >
-//     * type : 종류
-//     * sub_type : 서브 종류
-//     * from_date : 시작 일자
-//     * to_date : 종료 일자
-//     * count : 검색 개수
-//     * sort : 정렬 방식 ( ASC & DESC )
-//     */
-//    fun getSearchPage(type:String, sub_type:String, from_date:Long, to_date:Long, count:Int, sort:String) {
-//        if(sort.uppercase() == "ASC") {
-//            when(type) {
-//                LifeRecordDefine.AWARD -> {
-//                    awardPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                LifeRecordDefine.CERTIFICATION -> {
-//                    certificationPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                LifeRecordDefine.VOLUNTEER -> {
-//                    volunteerPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                LifeRecordDefine.GRADE -> {
-//                    gradePagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                else -> {
-//                    awardPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(LifeRecordDefine.AWARD, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                    certificationPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(LifeRecordDefine.CERTIFICATION, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                    volunteerPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(LifeRecordDefine.VOLUNTEER, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                    gradePagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageASC(LifeRecordDefine.GRADE, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//            }
-//        } else {
-//            when(type) {
-//                LifeRecordDefine.AWARD -> {
-//                    awardPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                LifeRecordDefine.CERTIFICATION -> {
-//                    certificationPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                LifeRecordDefine.VOLUNTEER -> {
-//                    volunteerPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                LifeRecordDefine.GRADE -> {
-//                    gradePagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(type, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//                else -> {
-//                    awardPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(LifeRecordDefine.AWARD, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                    certificationPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(LifeRecordDefine.CERTIFICATION, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                    volunteerPagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(LifeRecordDefine.VOLUNTEER, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                    gradePagingData.postValue(LifeRecordPagingRepository(RoomDataBase.getInstance(context)!!).getLifeRecordSearchPageDESC(LifeRecordDefine.GRADE, sub_type, from_date, to_date, count).cachedIn(viewModelScope))
-//                }
-//            }
-//        }
-//
-//    }
-//
-//    /**
-//     * 생활기록부 DB 검색 정렬 & 역정렬 조회
-//     *
-//     * < parameter >
-//     * type : 종류
-//     * sub_type : 서브 종류
-//     * from_date : 시작 일자
-//     * to_date : 종료 일자
-//     * count : 검색 개수
-//     * sort : 정렬 방식 ( ASC & DESC )
-//     */
-//    fun getLifeRecordSearch(type:String, sub_type:String, from_date:Long, to_date:Long, count:Int, sort:String) {
-//        if(sort.uppercase() == "ASC") {
-//            when(type) {
-//                LifeRecordDefine.AWARD -> {
-//                    awardData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(type, sub_type, from_date, to_date, count))
-//                }
-//                LifeRecordDefine.CERTIFICATION -> {
-//                    certificationData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(type, sub_type, from_date, to_date, count))
-//                }
-//                LifeRecordDefine.VOLUNTEER -> {
-//                    volunteerData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(type, sub_type, from_date, to_date, count))
-//                }
-//                LifeRecordDefine.GRADE -> {
-//                    gradeData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(type, sub_type, from_date, to_date, count))
-//                }
-//                else -> {
-//                    awardData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(LifeRecordDefine.AWARD, sub_type, from_date, to_date, count))
-//                    certificationData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(LifeRecordDefine.CERTIFICATION, sub_type, from_date, to_date, count))
-//                    volunteerData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(LifeRecordDefine.VOLUNTEER, sub_type, from_date, to_date, count))
-//                    gradeData.postValue(RoomDataBase.getInstance(context)?.lifeRecordService()?.searchASC(LifeRecordDefine.GRADE, sub_type, from_date, to_date, count))
-//                }
-//            }
-//        }
-//    }
-
-//    /**
-//     * 생활기록부 DB Record 생성
-//     */
-//    fun createLifeRecord(lifeRecord: LifeRecord) {
-//        Log.d("TEST", "생성완료! : $lifeRecord")
-//        RoomDataBase.getInstance(context)?.lifeRecordService()?.create(lifeRecord)
-//    }
-//
-//    /**
-//     * 생활기록부 DB Record 삭제
-//     */
-//    fun deleteLifeRecord(id: Long?) {
-//        id?.let {
-//            RoomDataBase.getInstance(context)?.lifeRecordService()?.delete(id)
-//        }
-//    }
 }

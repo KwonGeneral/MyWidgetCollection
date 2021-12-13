@@ -1,6 +1,6 @@
 package com.kwon.mywidgetcollection.contains
 
-class LifeRecordDefine {
+class LifeDefine {
     companion object {
         const val AWARD = "AWARD"
         const val CERTIFICATION = "CERTIFICATION"

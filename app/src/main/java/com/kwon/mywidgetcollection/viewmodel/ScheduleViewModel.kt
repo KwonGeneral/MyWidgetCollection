@@ -5,18 +5,24 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.asLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.kwon.mywidgetcollection.contains.Default
-import com.kwon.mywidgetcollection.contains.Define
 import com.kwon.mywidgetcollection.contains.ScheduleDefine
+import com.kwon.mywidgetcollection.contains.SharedDefine
 import com.kwon.mywidgetcollection.entity.*
 import com.kwon.mywidgetcollection.db.RoomDataBase
-import com.kwon.mywidgetcollection.pager.SchedulePaging
-import com.kwon.mywidgetcollection.pager.SchedulePagingRepository
+import com.kwon.mywidgetcollection.db.SharedDataBase
 import kotlinx.coroutines.flow.Flow
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
-class ScheduleViewModel(val context: Context): ViewModel() {
+
+class ScheduleViewModel(val context: Context, var option: SchSearchOption = SchSearchOption()): ViewModel() {
     // PagingData
     var todayPagingData = MutableLiveData<Flow<PagingData<ScheduleRecord>>>()  // 일정
     var todoPagingData = MutableLiveData<Flow<PagingData<ScheduleRecord>>>()  // 할일
@@ -25,151 +31,163 @@ class ScheduleViewModel(val context: Context): ViewModel() {
     var todayData = MutableLiveData<List<ScheduleRecord>>()  // 일정
     var todoData = MutableLiveData<List<ScheduleRecord>>()  // 할일
 
-    /**
-     * 스케쥴 DB Record 생성
-     */
-    fun createScheduleRecord(scheduleRecord: ScheduleRecord) {
-        Log.d("TEST", "생성완료! : $scheduleRecord")
-        RoomDataBase.getInstance(context)?.scheduleRecordService()?.create(scheduleRecord)
+    init {
+        //초기화
+        option.matchTime(getDate())
     }
 
-    /**
-     * 스케쥴 DB Record 삭제
-     */
-    fun deleteScheduleRecord(id: Long?) {
-        id?.let {
-            RoomDataBase.getInstance(context)?.scheduleRecordService()?.delete(id)
+    data class SchSearchOption(
+        var sub_type: String = Default.SUB_TYPE,
+        var from_date: Long = Default.FROM_DATE,
+        var to_date: Long = Default.TO_DATE,
+        var sort_name: String = Default.SORT_NAME,
+        var count: Int = Default.PAGE_COUNT,
+        var sortDESC: Boolean = false
+    ) {
+        fun matchTime(date: String) {
+            Calendar.getInstance()?.let { cal ->
+                cal.time = SimpleDateFormat(Default.DATE_FORMAT, Locale.KOREAN).parse(date)!!
+                cal.set(Calendar.HOUR, 0)
+                cal.set(Calendar.MINUTE, 0)
+                cal.set(Calendar.SECOND, 0)
+                from_date = cal.timeInMillis
+                cal.set(Calendar.HOUR, 23)
+                cal.set(Calendar.MINUTE, 59)
+                cal.set(Calendar.SECOND, 59)
+                to_date = cal.timeInMillis
+            }
         }
     }
 
-    // Todo =================================  Room Query  =================================
-    // Todo ================================= 일정 ( Today ) =================================
     /**
-     * 일정 조건 검색 페이징
+     * Shared Db : Date 가져오기
      */
-    private fun setTodayPaging(count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result())
-    }
-    private fun setTodayPaging(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result())
-    }
-    private fun setTodayPaging(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count).result())
-    }
-    private fun setTodayPaging(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count).result())
+    private fun getDate(): String {
+        return SharedDataBase.getInstance(context).getCalendarDate()
     }
 
     /**
-     * 일정 조건 검색 페이징 역정렬
+     * Shared Db : Date 저장하기
      */
-    private fun setTodayPagingDESC(count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result(true))
-    }
-    private fun setTodayPagingDESC(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result(true))
-    }
-    private fun setTodayPagingDESC(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count).result(true))
-    }
-    private fun setTodayPagingDESC(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count).result(true))
+    fun setDate(date: String) {
+        SharedDataBase.getInstance(context).setCalendarDate(date)
+        option.matchTime(getDate())
+        update()
     }
 
-    /**
-     * 일정 조건 검색
-     */
-    private fun setTodayData(count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
-    }
-    private fun setTodayData(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
-    }
-    private fun setTodayData(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count))
-    }
-    private fun setTodayData(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count))
+    fun setDESC(desc: Boolean) {
+        option.apply {
+            sortDESC = desc
+        }
+        update()
     }
 
-    /**
-     * 일정 조건 검색 역정렬
-     */
-    private fun setTodayDataDESC(count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
-    }
-    private fun setTodayDataDESC(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
-    }
-    private fun setTodayDataDESC(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count))
-    }
-    private fun setTodayDataDESC(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todayData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count))
+    fun insertScheduleRecord(scheduleRecord: ScheduleRecord) {
+        RoomDataBase.getInstance(context)?.scheduleRecordService()?.create(scheduleRecord)
+        Log.d("TEST", "생성완료 : $scheduleRecord")
     }
 
-    // Todo ================================= 할일 ( Todo ) =================================
-    /**
-     * 할일 조건 검색 페이징
-     */
-    private fun setTodoPaging(count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result())
-    }
-    private fun setTodoPaging(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result())
-    }
-    private fun setTodoPaging(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count).result())
-    }
-    private fun setTodoPaging(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count).result())
+    fun deleteScheduleRecord(scheduleRecord: ScheduleRecord) {
+        RoomDataBase.getInstance(context)?.scheduleRecordService()?.delete(scheduleRecord.id!!)
+        Log.d("TEST", "생성완료 : $scheduleRecord")
     }
 
-    /**
-     * 할일 검색 페이징 역정렬
-     */
-    private fun setTodoPagingDESC(count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result(true))
-    }
-    private fun setTodoPagingDESC(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count).result(true))
-    }
-    private fun setTodoPagingDESC(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count).result(true))
-    }
-    private fun setTodoPagingDESC(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoPagingData.postValue(SchedulePaging.Search(context, ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count).result(true))
+
+    fun updateToday(t_option: SchSearchOption = option) {
+        t_option.run {
+            updatePaging(this, ScheduleDefine.TODAY)?.let {
+                todayPagingData.postValue(it)
+            }
+            updateList(this, ScheduleDefine.TODAY)?.let {
+                todayData.postValue(it)
+            }
+        }
     }
 
-    /**
-     * 할일 조건 검색
-     */
-    private fun setTodoData(count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
-    }
-    private fun setTodoData(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
-    }
-    private fun setTodoData(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count))
-    }
-    private fun setTodoData(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.search(ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count))
+    fun updateTodo(t_option: SchSearchOption = option) {
+        t_option.run {
+            updateList(this, ScheduleDefine.TODO)?.let {
+                todoData.postValue(it)
+            }
+            updatePaging(this, ScheduleDefine.TODO)?.let {
+                todoPagingData.postValue(it)
+            }
+        }
     }
 
-    /**
-     * 할일 조건 검색 역정렬
-     */
-    private fun setTodoDataDESC(count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, Default.SUB_TYPE, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
+    fun update(t_option: SchSearchOption = option) {
+        t_option.run {
+            updateToday(this)
+            updateTodo(this)
+        }
     }
-    private fun setTodoDataDESC(sub_type: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, sub_type, Default.FROM_DATE, Default.TO_DATE, Default.SORT_NAME, count=count))
+
+    private fun updateList(option: SchSearchOption, type: String): List<ScheduleRecord>? {
+        option.run {
+            RoomDataBase.getInstance(context)?.scheduleRecordService()
+                ?.let { scheduleRecordService ->
+                    if (!sortDESC) {
+                        return scheduleRecordService.search(
+                            type,
+                            sub_type,
+                            from_date,
+                            to_date,
+                            sort_name,
+                            count
+                        )
+                    } else {
+                        return scheduleRecordService.searchDESC(
+                            type,
+                            sub_type,
+                            from_date,
+                            to_date,
+                            sort_name,
+                            count
+                        )
+                    }
+                }
+        }
+        return null
     }
-    private fun setTodoDataDESC(sub_type: String, from_date: Long, to_date: Long, count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, sub_type, from_date, to_date, Default.SORT_NAME, count=count))
-    }
-    private fun setTodoDataDESC(sub_type: String, from_date: Long, to_date: Long, sort_name: String, count: Int = Default.MAX_PAGE_COUNT) {
-        todoData.postValue(RoomDataBase.getInstance(context)?.scheduleRecordService()?.searchDESC(ScheduleDefine.TODAY, sub_type, from_date, to_date, sort_name, count=count))
+
+    private fun updatePaging(
+        option: SchSearchOption,
+        type: String
+    ): Flow<PagingData<ScheduleRecord>>? {
+        option.run {
+            RoomDataBase.getInstance(context)?.scheduleRecordService()
+                ?.let { scheduleRecordService ->
+                    PagingConfig(pageSize = count, enablePlaceholders = true)?.let { pagingConfig ->
+                        var pagingSourceFactory = {
+                            scheduleRecordService.searchByPage(
+                                type,
+                                sub_type,
+                                from_date,
+                                to_date,
+                                sort_name,
+                                count
+                            )
+                        }
+                        if (sortDESC) {
+                            pagingSourceFactory = {
+                                scheduleRecordService.searchByPageDESC(
+                                    type,
+                                    sub_type,
+                                    from_date,
+                                    to_date,
+                                    sort_name,
+                                    count
+                                )
+                            }
+                        }
+
+                        return Pager(
+                            config = pagingConfig,
+                            pagingSourceFactory = pagingSourceFactory
+                        ).flow
+                    }
+                }
+            return null
+        }
     }
 }

@@ -24,7 +24,7 @@ data class AwardData(var type: String? = "", var sub_type: String? = "", var tit
                 title = awardData.title,
                 area = awardData.area,
                 rank = awardData.rank,
-                create_at = System.currentTimeMillis()
+                create_at = 0
             )
         }
     }

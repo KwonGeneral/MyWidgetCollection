@@ -1,25 +1,43 @@
 package com.kwon.mywidgetcollection.db
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
+import com.kwon.mywidgetcollection.contains.Default
+import com.kwon.mywidgetcollection.contains.SharedDefine
+import com.kwon.mywidgetcollection.viewmodel.ScreenViewModel
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
-class SharedDataBase(context: Context, prefAppName: String?): SharedPreferencesPropertyBackend(context, prefAppName) {
-    override fun getString(key: String?, defaultValue: String?): String {
-        return super.getString(key, defaultValue)
+class SharedDataBase(context: Context, prefAppName: String?) :
+    SharedPreferencesPropertyBackend(context, prefAppName) {
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        var instance: SharedDataBase? = null
+        val prefAppName = "shared_db"
+        fun getInstance(context: Context): SharedDataBase {
+            instance?.let {
+                return it
+            }
+            instance = SharedDataBase(context, prefAppName)
+            return instance!!
+        }
     }
 
-    override fun setString(key: String?, value: String?): SharedPreferencesPropertyBackend {
-        return super.setString(key, value)
+
+    fun setCalendarDate(date: String) {
+        setString(SharedDefine.Schedule.DATE, date)
     }
 
-    override fun getInt(key: String?, defaultValue: Int): Int {
-        return super.getInt(key, defaultValue)
+    fun getCalendarDate(): String {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = System.currentTimeMillis()
+        return getString(
+            SharedDefine.Schedule.DATE,
+            SimpleDateFormat(Default.DATE_FORMAT, Locale.KOREAN).format(cal.time)
+        )
     }
 
-    override fun setInt(key: String?, value: Int): SharedPreferencesPropertyBackend {
-        return super.setInt(key, value)
-    }
-
-    fun isAutoLogin(): Boolean {
-        return false
-    }
 }

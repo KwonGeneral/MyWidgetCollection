@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             app:nv_image_src="@drawable/bookmark"
             app:nv_text="@string/mode"
-            app:nv_action="@string/action_setting"
+            app:nv_action="@string/action_mode"
             />
 
         <navigation.BottomNavigationItem

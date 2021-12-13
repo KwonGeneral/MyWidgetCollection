@@ -13,9 +13,9 @@ class ScheduleRecord(
     val sub_type: String? = "",
     val title: String? = "",
     val content: String? = "",
+    val status:Int? = 0,  // 0 : 미진행, 1 : 진행중, 2 : 완료, 400 : 실패
     val from_date: Long? = 0,
     val to_date:Long? = 0,
-    val status:Int? = 0,  // 0 : 미진행, 1 : 진행중, 2 : 완료, 400 : 실패
     val create_at: Long? = 0,
 )
 

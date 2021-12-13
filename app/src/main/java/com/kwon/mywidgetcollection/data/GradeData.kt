@@ -24,7 +24,7 @@ data class GradeData(var type: String? = "", var sub_type: String? = "", var tit
                 title = certificationData.title,
                 rank = certificationData.rank,
                 semester = certificationData.semester,
-                create_at = System.currentTimeMillis()
+                create_at = 0
             )
         }
     }

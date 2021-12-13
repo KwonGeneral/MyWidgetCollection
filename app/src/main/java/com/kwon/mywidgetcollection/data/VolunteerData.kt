@@ -1,8 +1,7 @@
 package com.kwon.mywidgetcollection.data
 
 import com.kwon.mywidgetcollection.entity.LifeRecord
-import com.kwon.mywidgetcollection.utils.DateUtil
-import java.time.LocalDateTime
+import java.util.*
 
 data class VolunteerData(var type: String? = "", var sub_type: String? = "", var title: String? = "", var area: String? = "", var from_date: Long? = 0, var to_date: Long? = 0) {
     companion object {
@@ -27,7 +26,7 @@ data class VolunteerData(var type: String? = "", var sub_type: String? = "", var
                 area = volunteerData.area,
                 from_date = volunteerData.from_date,
                 to_date = volunteerData.to_date,
-                create_at = System.currentTimeMillis()
+                create_at = 0
             )
         }
     }
