@@ -44,10 +44,6 @@ class ScheduleFragment : Fragment() {
         var todoFrom:Long = SimpleDateFormat(Default.DATE_FORMAT, Locale.KOREAN).parse("2021-12-12 10:43")!!.time
         var todoTo:Long = SimpleDateFormat(Default.DATE_FORMAT, Locale.KOREAN).parse("2021-12-12 13:43")!!.time
 
-        for(k in RoomDataBase.getInstance(requireContext())?.scheduleRecordService()?.readAll()!!) {
-            Log.d("TEST", "아이템 : ${k.title}")
-        }
-
         calendar_btn_1.setOnClickListener {
             ScheduleViewModel(requireContext())?.option
         }

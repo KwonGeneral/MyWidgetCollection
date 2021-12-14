@@ -19,9 +19,6 @@ interface ScheduleRecordService {
     @Query("SELECT * FROM schedule_record")
     fun readByPage() : PagingSource<Int, ScheduleRecord>
 
-//    @Query("SELECT * FROM schedule_record WHERE from_date BETWEEN")
-//    fun test(from_date: Date, to_date: Date)
-
 
     //해당 type의 데이터를 프롬데이트 기준으로 정순/역순 form-to 안의 값을 반환
     @Query("SELECT * FROM schedule_record WHERE type = :type AND sub_type = :sub_type AND from_date >= :from_date AND to_date <= :to_date ORDER BY :sort_name ASC LIMIT :count")

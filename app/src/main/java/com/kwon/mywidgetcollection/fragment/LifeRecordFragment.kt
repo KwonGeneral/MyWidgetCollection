@@ -42,12 +42,6 @@ class LifeRecordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("TEST", "- 생활기록부 프레그먼트 -")
 
-        for(k in RoomDataBase.getInstance(requireContext())?.lifeRecordService()?.readAll()!!) {
-            Log.d("TEST" , "아이템 : ${k.title}")
-        }
-        Log.d("TEST", "from : ${SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREAN).parse("2020-07-16 13:33")!!.time}")
-        Log.d("TEST", "to : ${SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREAN).parse("2020-07-16 18:40")!!.time}")
-
         var firstCheck = true
         for(tap_item in title_container.children) {
             if(firstCheck) {

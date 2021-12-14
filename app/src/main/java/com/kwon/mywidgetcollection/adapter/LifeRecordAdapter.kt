@@ -31,7 +31,7 @@ class LifeRecordAdapter(val type: String? = "") : PagingDataAdapter<LifeRecord, 
     }
 
     override fun getItemCount(): Int {
-        Log.d("TEST", "getItemCount : ${super.getItemCount()}")
+//        Log.d("TEST", "getItemCount : ${super.getItemCount()}")
         return super.getItemCount()
     }
 

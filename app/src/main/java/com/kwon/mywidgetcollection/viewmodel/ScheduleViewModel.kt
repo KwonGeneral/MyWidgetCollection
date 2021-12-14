@@ -126,16 +126,7 @@ class ScheduleViewModel(val context: Context, var option: SchSearchOption = SchS
         option.run {
             RoomDataBase.getInstance(context)?.scheduleRecordService()
                 ?.let { scheduleRecordService ->
-                    if (!sortDESC) {
-                        return scheduleRecordService.search(
-                            type,
-                            sub_type,
-                            from_date,
-                            to_date,
-                            sort_name,
-                            count
-                        )
-                    } else {
+                    if(sortDESC) {
                         return scheduleRecordService.searchDESC(
                             type,
                             sub_type,
@@ -145,6 +136,14 @@ class ScheduleViewModel(val context: Context, var option: SchSearchOption = SchS
                             count
                         )
                     }
+                    return scheduleRecordService.search(
+                        type,
+                        sub_type,
+                        from_date,
+                        to_date,
+                        sort_name,
+                        count
+                    )
                 }
         }
         return null

@@ -30,7 +30,7 @@ class SchedulePageAdapter(val type: String? = "") : PagingDataAdapter<ScheduleRe
     }
 
     override fun getItemCount(): Int {
-        Log.d("TEST", "getItemCount : ${super.getItemCount()}")
+//        Log.d("TEST", "getItemCount : ${super.getItemCount()}")
         return super.getItemCount()
     }
 

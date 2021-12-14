@@ -39,5 +39,4 @@ class SharedDataBase(context: Context, prefAppName: String?) :
             SimpleDateFormat(Default.DATE_FORMAT, Locale.KOREAN).format(cal.time)
         )
     }
-
 }
