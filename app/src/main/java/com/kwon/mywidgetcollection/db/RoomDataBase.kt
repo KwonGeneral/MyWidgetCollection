@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kwon.mywidgetcollection.api.*
 import com.kwon.mywidgetcollection.entity.*
 
-@Database(entities = [LifeRecord::class, ScheduleRecord::class, MockExamRecord::class], version = 2, exportSchema = true)
+@Database(entities = [LifeRecord::class, ScheduleRecord::class, MockExamRecord::class], version = 3, exportSchema = true)
 abstract class RoomDataBase : RoomDatabase() {
     abstract fun lifeRecordService(): LifeRecordService
     abstract fun scheduleRecordService(): ScheduleRecordService

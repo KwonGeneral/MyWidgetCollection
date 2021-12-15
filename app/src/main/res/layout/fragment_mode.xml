@@ -12,95 +12,72 @@
         android:id="@+id/timer_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="100dp"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/subject_input"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/timer_hour_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/sub_headline"
             android:text="30"
-            />
+            android:textAppearance="@style/sub_headline" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/sub_headline"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:text=":"
-            />
+            android:textAppearance="@style/sub_headline" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/timer_min_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/sub_headline"
             android:text="00"
-            />
+            android:textAppearance="@style/sub_headline" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/sub_headline"
-            android:text=":"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            />
+            android:text=":"
+            android:textAppearance="@style/sub_headline" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/timer_second_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/sub_headline"
             android:text="00"
-            />
-
+            android:textAppearance="@style/sub_headline" />
     </LinearLayout>
 
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/subject_input"
-        android:layout_width="400dp"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/now_subject_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/sub_headline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timer_layout"
-        app:layout_constraintBottom_toTopOf="@id/point_input"
-        android:hint="국어"
-        android:textColor="#333333"
-        android:textColorHint="#999999"
-        />
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/point_input"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/sub_headline"
         android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subject_input"
-        android:hint="점수"
-        android:textColor="#333333"
-        android:textColorHint="#999999"
+        android:text="현재 과목"
+        style="@style/sub_headline"
         />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/mock_start_btn"
+        style="@style/UPlus.Button.Contained"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        style="@style/UPlus.Button.Contained"
-        android:textAppearance="@style/sub_headline"
         android:text="시작"
-        android:layout_marginTop="100dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="@style/sub_headline"
+        android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/point_input"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/mock_pause_btn"
+        tools:layout_editor_absoluteY="562dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/mock_pause_btn"
@@ -109,8 +86,8 @@
         style="@style/UPlus.Button.Contained"
         android:textAppearance="@style/sub_headline"
         android:text="일시중지"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/mock_start_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />

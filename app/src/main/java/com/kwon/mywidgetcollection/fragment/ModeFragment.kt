@@ -32,13 +32,51 @@ class ModeFragment : Fragment() {
         Log.d("TEST", "- 모드 프레그먼트 -")
 
         MockExamViewModel.getInstance(requireContext())?.let { vm ->
+
+            // 시험명 입력
+            vm.setMockTitle("3월 모의고사")
+            Log.d("MOCK", "시험명 입력: 3월 모의고사")
+
+            vm.addMockExam("국어", 1000)
+            vm.addMockExam("영어", 2000)
+            vm.addMockExam("수학", 3000)
+            vm.addMockExam("사회", 1000)
+            vm.addMockExam("과학", 2000)
+            Log.d("MOCK", "시험 스케쥴 입력: 국어 1초 / 영어 2초 / 수학 3초 / 사회 1초 / 과학 2초")
+
+            mock_start_btn.setOnClickListener {
+                vm.startMockExam()
+                Log.d("MOCK", "모의고사 시작하기")
+            }
+
+            mock_pause_btn.setOnClickListener {
+                vm.pauseExam()
+                Log.d("MOCK", "모의고사 일시정지")
+            }
+
+            mock_stop_btn.setOnClickListener {
+                vm.examFinish()
+                Log.d("MOCK", "모의고사 중지하기")
+                for(k in RoomDataBase.getInstance(requireContext())?.mockExamRecordService()?.readAll(100)!!) {
+//                    if(k.id == 0L) {  // 삭제
+//                        vm.delete(k)
+//                    }
+//                    vm.modify(k, MockExamRecord.MockExamData("영어", 3000, 60))  // 수정
+                    Log.d("TEST", "전체 데이터 -> id: ${k.id} / title: ${k.title} / subjects: ${k.subjects}")
+                }
+            }
+
             vm.tempMockExamRecord.observe(viewLifecycleOwner, { ob ->
-                Log.d("TEST", " 값 변동 : $ob")
+                Log.d("TEST", "tempMockExamRecord 값 변동 : $ob")
             })
 
             vm.timerData.observe(viewLifecycleOwner, { ob ->
+                if(now_subject_text.text.toString() != ob.timerSubjectName) {
+                    now_subject_text.text = ob.timerSubjectName
+                }
+
                 ob?.let {  timerData ->
-                    Log.d("Timer", "타이머 값 변동 : ${timerData.time}")
+                    Log.d("Timer", "timerData 값 변동 : ${timerData.time}")
                     if(timerData.time == 0L) {
                         return@observe
                     }
@@ -80,30 +118,6 @@ class ModeFragment : Fragment() {
                     }
                 }
             })
-
-            vm.setMockTitle("3월 모의고사")
-            vm.addMockExam("수학", 6000)
-            vm.addMockExam("영어", 3000)
-            vm.addMockExam("사회", 4000)
-
-            mock_start_btn.setOnClickListener {
-                vm.startMockExam()
-            }
-
-            mock_pause_btn.setOnClickListener {
-                vm.pauseExam()
-            }
-
-            mock_stop_btn.setOnClickListener {
-                for(k in RoomDataBase.getInstance(requireContext())?.mockExamRecordService()?.readAll(100)!!) {
-//                    if(k.id == 0L) {  // 삭제
-//                        vm.delete(k)
-//                    }
-//                    vm.modify(k, MockExamRecord.MockExamData("영어", 3000, 60))  // 수정
-                    Log.d("TEST", "전체 데이터 -> id: ${k.id} / title: ${k.title} / subjects: ${k.subjects}")
-                }
-
-            }
         }
 
     }
