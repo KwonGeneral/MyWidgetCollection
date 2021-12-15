@@ -37,11 +37,11 @@ class ModeFragment : Fragment() {
             vm.setMockTitle("3월 모의고사")
             Log.d("MOCK", "시험명 입력: 3월 모의고사")
 
-            vm.addMockExam("국어", 1000)
-            vm.addMockExam("영어", 2000)
-            vm.addMockExam("수학", 3000)
-            vm.addMockExam("사회", 1000)
-            vm.addMockExam("과학", 2000)
+            vm.addMockExam("국어", 3000)
+            vm.addMockExam("영어", 4000)
+            vm.addMockExam("수학", 5000)
+            vm.addMockExam("사회", 4000)
+            vm.addMockExam("과학", 3000)
             Log.d("MOCK", "시험 스케쥴 입력: 국어 1초 / 영어 2초 / 수학 3초 / 사회 1초 / 과학 2초")
 
             mock_start_btn.setOnClickListener {
@@ -73,6 +73,9 @@ class ModeFragment : Fragment() {
             vm.timerData.observe(viewLifecycleOwner, { ob ->
                 if(now_subject_text.text.toString() != ob.timerSubjectName) {
                     now_subject_text.text = ob.timerSubjectName
+                    timer_hour_text.text = "30"
+                    timer_min_text.text = "00"
+                    timer_second_text.text = "00"
                 }
 
                 ob?.let {  timerData ->
