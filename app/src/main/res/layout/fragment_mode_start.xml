@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frameLayout4"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333333"
+    tools:context=".fragment.ModeStartFragment">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mode_start_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3월 모의고사"
+        style="@style/headline"
+        android:textColor="#ffffff"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/mode_start_layout"
+        />
+
+    <LinearLayout
+        android:id="@+id/mode_start_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mode_start_subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/sub_headline"
+            android:text="1교시 언어 영역"
+            android:includeFontPadding="false"
+            android:textColor="#ffffff"
+            android:textAlignment="center"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mode_start_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/headline"
+            android:textSize="60sp"
+            android:text="80:00"
+            android:includeFontPadding="false"
+            android:textColor="#ffffff"
+            android:textAlignment="center"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mode_start_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        >
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mode_start_btn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="시작"
+            style="@style/UPlus.Button.Outlined"
+            android:textColor="#ffffff"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mode_pause_btn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="일시정지"
+            android:layout_marginTop="20dp"
+            style="@style/UPlus.Button.Outlined"
+            android:textColor="#ffffff"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mode_next_btn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="다음"
+            android:layout_marginTop="20dp"
+            style="@style/UPlus.Button.Outlined"
+            android:textColor="#ffffff"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mode_stop_btn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="종료"
+            android:layout_marginTop="20dp"
+            style="@style/UPlus.Button.Outlined"
+            android:textColor="#ffffff"
+            />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

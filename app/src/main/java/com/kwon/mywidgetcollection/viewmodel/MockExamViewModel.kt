@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import java.lang.IndexOutOfBoundsException
 import java.sql.Time
 import java.util.*
+import kotlin.math.floor
 
 class MockExamViewModel(val context: Context) {
     /**
@@ -40,6 +41,15 @@ class MockExamViewModel(val context: Context) {
             instance = MockExamViewModel(context)
             return instance!!
         }
+
+        fun releaseInstace() {
+            instance = null
+        }
+    }
+
+    init {
+        update()
+        timerDataCheck()
     }
 
     /**
@@ -56,12 +66,16 @@ class MockExamViewModel(val context: Context) {
      * DB 레코드 수정
      * data: subjects 수정
      */
-    fun modify(record: MockExamRecord) { modifyMockExamRecord(record) }
+    fun modify(record: MockExamRecord) {
+        modifyMockExamRecord(record)
+    }
+
     fun modify(record: MockExamRecord, data: MockExamRecord.MockExamData) {
         record?.let {
             it.modify(data)
         }
         modifyMockExamRecord(record)
+        update()
     }
 
     /**
@@ -76,7 +90,10 @@ class MockExamViewModel(val context: Context) {
     /**
      * 정렬
      */
-    private fun getDESC(): Boolean { return sortDESC }
+    private fun getDESC(): Boolean {
+        return sortDESC
+    }
+
     private fun setDESC(desc: Boolean) {
         sortDESC = desc
         update()
@@ -88,12 +105,15 @@ class MockExamViewModel(val context: Context) {
     private fun insertMockExamRecord(mockExamRecord: MockExamRecord) {
         RoomDataBase.getInstance(context)?.mockExamRecordService()?.create(mockExamRecord)
     }
+
     private fun modifyMockExamRecord(mockExamRecord: MockExamRecord) {
         RoomDataBase.getInstance(context)?.mockExamRecordService()?.update(mockExamRecord)
     }
+
     private fun deleteMockExamRecord(id: Long) {
         RoomDataBase.getInstance(context)?.mockExamRecordService()?.delete(id)
     }
+
     private fun getRecordList(count: Int = Default.PAGE_COUNT): List<MockExamRecord>? {
         RoomDataBase.getInstance(context)?.mockExamRecordService()?.let { mockExamRecordService ->
             if (sortDESC) return mockExamRecordService.readAllDESC(count)
@@ -111,12 +131,24 @@ class MockExamViewModel(val context: Context) {
         return tempMockExamRecord
     }
     private fun timerDataCheck(): MutableLiveData<TimerData>? {
+        if (timerData.value == null) {
+            tempDataCheck()?.value?.let { record ->
+                TimerData(TimerStatus.STOP, Default.EMPTY_STR, record)?.let {
+                    timerData.value = it
+                    it.remain_time = it.getCurrentSubject()?.range!!
+                }
+            }
+        }
         timerData.value?.let { timer ->
             if (timer.timerStatus == TimerStatus.START || timer.timerStatus == TimerStatus.END) return null
-            if (timer.timerStatus == TimerStatus.END) return null
             return timerData
         }
         return null
+    }
+
+    fun timerRefresh() {
+        timerStart()
+        timerPause()
     }
 
     /**
@@ -128,7 +160,7 @@ class MockExamViewModel(val context: Context) {
         }
         tempMockExamRecord.value?.let {
             it.title = title
-            tempMockExamRecord.value = it
+            tempMockExamRecord.postValue(it)
         }
     }
 
@@ -141,14 +173,17 @@ class MockExamViewModel(val context: Context) {
         }
         return null
     }
+
     fun addMockExam(name: String, range: Long): Boolean {
         tempDataCheck()?.value?.let {
             it.add(MockExamRecord.MockExamData(name, range, 0))
             tempMockExamRecord.value = it
+            timerDataCheck()
             return true
         }
         return false
     }
+
     fun removeMockExam(mc_data: MockExamRecord.MockExamData): Boolean {
         tempDataCheck()?.value?.let {
             it.remove(mc_data)
@@ -157,6 +192,7 @@ class MockExamViewModel(val context: Context) {
         }
         return false
     }
+
     fun modifyMockExam(mc_data: MockExamRecord.MockExamData): Boolean {
         tempDataCheck()?.value?.let {
             mc_data?.let { mc_data ->
@@ -179,36 +215,54 @@ class MockExamViewModel(val context: Context) {
         }
         return null
     }
+
     private fun resetTempData() {
         tempMockExamRecord.value = null
     }
+
+
+    fun checkExamStart(): Boolean {
+        tempMockExamRecord.value?.let {
+
+            if (it.getSubject()?.subjects?.size!! > 0) {
+                return true
+            }
+        }
+        return false
+    }
+
 
     /**
      * 타이머 ( Timer ) 시작
      */
     fun timerStart(): Boolean {
         tempDataCheck()?.value?.let { record ->
-            timerData.value = TimerData(TimerStatus.STOP, Default.EMPTY_STR, record)
             timerDataCheck()?.value?.let { timer ->
-                val firstTime = timer.time
+
                 timer.timerStatus = TimerStatus.START
                 timer.timer = Timer()
                 timer.startTime = System.currentTimeMillis()
+                timer.prev_time = timer.startTime
                 val timerTask: TimerTask = object : TimerTask() {
                     override fun run() {
-                        timer.time = System.currentTimeMillis() - timer.startTime + firstTime
+                        timer.time = System.currentTimeMillis() - timer.prev_time
+                        timer.prev_time = System.currentTimeMillis()
+                        timer.remain_time = timer.remain_time - timer.time
+
+                        Log.d("SHONZ", "timer.remain_time = " + timer.remain_time)
                         timer.getCurrentSubject()?.let { subject ->
-                            if (subject.range < timer.time) {
+                            if (timer.remain_time < 0) {
                                 timer.time = 0
                                 timer.timer.cancel()
                                 timer.startTime = System.currentTimeMillis()
                                 nextExam()
+                            } else {
+                                timerData.postValue(timer)
                             }
                         }
-                        timerData.postValue(timer)
                     }
                 }
-                timer.timer.schedule(timerTask, 0, 1000)
+                timer.timer.schedule(timerTask, 0, 300)
                 return true
             }
         }
@@ -219,9 +273,10 @@ class MockExamViewModel(val context: Context) {
      * 타이머 ( Timer ) 일시정지
      */
     fun timerPause(): Boolean {
-        tempDataCheck()?.let {
-            timerDataCheck()?.value?.let { timer ->
+        tempDataCheck()?.value?.let {
+            timerData.value?.let { timer ->
                 timer.timer?.let {
+                    if (timer.timerStatus == TimerStatus.END) return false
                     timer.timerStatus = TimerStatus.PAUSE
                     it.cancel()
                     return true
@@ -236,7 +291,9 @@ class MockExamViewModel(val context: Context) {
      */
     fun timerStop(): Boolean {
         insertTempData()?.let {
+            timerPause()
             timerData.postValue(null)
+            update()
             return true
         }
         return false
@@ -247,12 +304,21 @@ class MockExamViewModel(val context: Context) {
      */
     fun nextExam(): Boolean {
         timerData.value?.let { timer ->
+
             timer.timerStatus = TimerStatus.PAUSE
             timer.next()
             timerData.postValue(timer)
             return true
         }
         return false
+    }
+
+    fun invalidate() {
+
+    }
+
+    fun examInit() {
+        timerDataCheck()
     }
 
     /**
@@ -269,9 +335,11 @@ class MockExamViewModel(val context: Context) {
         var timerStatus: TimerStatus = TimerStatus.STOP,
         var timerSubject: String = Default.EMPTY_STR,
         val timerRecord: MockExamRecord,
+        var remain_time: Long = 0,
         var time: Long = Default.EMPTY_LONG,
         var timer: Timer = Timer(),
-        var startTime: Long = System.currentTimeMillis()
+        var startTime: Long = System.currentTimeMillis(),
+        var prev_time: Long = 0
     ) {
         init {
             /**
@@ -291,23 +359,27 @@ class MockExamViewModel(val context: Context) {
          * next_subject: 다음 시험 Subjects 데이터
          */
         fun next(): Boolean {
-            if (timerStatus == TimerStatus.START || timerStatus == TimerStatus.END) {
-                return false
-            }
+            if (timerStatus == TimerStatus.START || timerStatus == TimerStatus.END) return false
             timerRecord.getSubject()?.let { list ->
                 for (i in 0 until list.subjects.size) {
                     list.subjects[i]?.let { now_subject ->
+                        time = 0
+                        timer.cancel()
+                        startTime = System.currentTimeMillis()
                         try {
                             list.subjects[i + 1]?.let { next_subject ->
                                 if (now_subject.name == timerSubject) {
                                     timerSubject = next_subject.name
                                     timerStatus = TimerStatus.STOP
+                                    remain_time = next_subject.range
                                     return true
                                 }
                             }
                         } catch (e: IndexOutOfBoundsException) {
-                            timerStatus = TimerStatus.END
-                            return true
+                            e.printStackTrace()
+                            timerStatus = TimerStatus.PAUSE
+                            time = 0
+                            return false
                         }
                     }
                 }

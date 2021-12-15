@@ -38,6 +38,9 @@ class ScheduleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("TEST", "- 스케쥴 프레그먼트 -")
+//        (context as MainActivity)?.test_schedule?.let {
+//            it.isChecked = true
+//        }
         (context as MainActivity).test_schedule.isChecked = true
         var todayFrom:Long = SimpleDateFormat(Default.DATE_FORMAT, Locale.KOREAN).parse("2021-12-13 16:43")!!.time
         var todayTo:Long = SimpleDateFormat(Default.DATE_FORMAT, Locale.KOREAN).parse("2021-12-13 18:43")!!.time

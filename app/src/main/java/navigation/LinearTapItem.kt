@@ -16,9 +16,9 @@ class LinearTapItem(context: Context?, val item: LinearTapItemData) : LinearLayo
     lateinit var action: String
     lateinit var titleTextView:AppCompatTextView
     lateinit var contentTextView:AppCompatTextView
-    private lateinit var defaultColor: String
-    private lateinit var focusColor: String
-    private lateinit var disableColor: String
+    var defaultColor: String? = null
+    var focusColor: String? = null
+    var disableColor: String? = null
     private val Int.dp: Int get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
     init {
@@ -108,9 +108,13 @@ class LinearTapItem(context: Context?, val item: LinearTapItemData) : LinearLayo
     override fun setChecked(checked: Boolean) {
         if (checked != mChecked) {
             if(checked) {
-                titleTextView.setTextColor(Color.parseColor(focusColor))
+                if(focusColor != null) {
+                    titleTextView.setTextColor(Color.parseColor(focusColor))
+                }
             } else {
-                titleTextView.setTextColor(Color.parseColor(defaultColor))
+                if(defaultColor != null) {
+                    titleTextView.setTextColor(Color.parseColor(defaultColor))
+                }
             }
             mChecked = checked
             refreshDrawableState()

@@ -14,14 +14,11 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import com.kwon.mywidgetcollection.R
-import com.kwon.mywidgetcollection.adapter.MockExamAdapter
-import com.kwon.mywidgetcollection.contains.Default
-import com.kwon.mywidgetcollection.contains.ScreenDefine
 import com.kwon.mywidgetcollection.db.RoomDataBase
 import com.kwon.mywidgetcollection.entity.MockExamRecord
 import com.kwon.mywidgetcollection.viewmodel.MockExamViewModel
-import com.kwon.mywidgetcollection.viewmodel.ScreenViewModel
 import kotlinx.android.synthetic.main.fragment_mode.*
+import kotlinx.android.synthetic.main.fragment_mode_start.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,13 +28,13 @@ import java.util.logging.SimpleFormatter
 import kotlin.math.roundToLong
 
 
-class ModeFragment : DialogFragment() {
+class ModeStartFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_mode, container, false)
+        return inflater.inflate(R.layout.fragment_mode_start, container, false)
     }
 
     override fun onResume() {
@@ -50,8 +47,11 @@ class ModeFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        MockExamViewModel.releaseInstace()
+//        MockExamViewModel.releaseInstace()
         MockExamViewModel.getInstance(requireContext())?.let { vm ->
+            Log.d("TEST", "- 모의고사 시작 프레그먼트 - ")
+            mode_start_title.text = vm.tempMockExamRecord.value?.title
+
             vm.examData.observe(viewLifecycleOwner, {
                 for(k in it) {
                     Log.d(
@@ -61,31 +61,30 @@ class ModeFragment : DialogFragment() {
                 }
             })
 
-            mode_setting_start_btn.setOnClickListener {
-                vm.setMockTitle(mode_setting_layout_title_edit.text.toString())
+            vm.timerData.observe(viewLifecycleOwner, { ob ->
+                ob?.let {
+                    mode_start_subject.text = ob.timerSubject
+                    var sec:Long = ob.remain_time/1000
+                    val min:Long = Math.floor((sec/60).toDouble()).roundToLong()
+                    sec -= min * 60
 
-                if(exam_subject_edit_1.text.toString() != Default.EMPTY_STR && exam_time_edit_1.text.toString() != Default.EMPTY_STR) {
-                    vm.addMockExam(exam_subject_edit_1.text.toString(), exam_time_edit_1.text.toString().toLong())
+                    mode_start_time.text = "$min:$sec"
                 }
-                if(exam_subject_edit_2.text.toString() != Default.EMPTY_STR && exam_time_edit_2.text.toString() != Default.EMPTY_STR) {
-                    vm.addMockExam(exam_subject_edit_2.text.toString(), exam_time_edit_2.text.toString().toLong())
-                }
-                if(exam_subject_edit_3.text.toString() != Default.EMPTY_STR && exam_time_edit_3.text.toString() != Default.EMPTY_STR) {
-                    vm.addMockExam(exam_subject_edit_3.text.toString(), exam_time_edit_3.text.toString().toLong())
-                }
-                if(exam_subject_edit_4.text.toString() != Default.EMPTY_STR && exam_time_edit_4.text.toString() != Default.EMPTY_STR) {
-                    vm.addMockExam(exam_subject_edit_4.text.toString(), exam_time_edit_4.text.toString().toLong())
-                }
-                if(exam_subject_edit_5.text.toString() != Default.EMPTY_STR && exam_time_edit_5.text.toString() != Default.EMPTY_STR) {
-                    vm.addMockExam(exam_subject_edit_5.text.toString(), exam_time_edit_5.text.toString().toLong())
-                }
+            })
 
-//                vm.timerRefresh()
-                ScreenViewModel.getInstance(requireContext())?.screenStatus.value = ScreenDefine.MODE_START_FRAGMENT
+            mode_start_btn.setOnClickListener {
+                vm.timerStart()
+            }
+            mode_pause_btn.setOnClickListener {
+                vm.timerPause()
+            }
+            mode_next_btn.setOnClickListener {
+                vm.nextExam()
+            }
+            mode_stop_btn.setOnClickListener {
+                vm.timerStop()
             }
         }
-
-
 
 //        MockExamViewModel(requireContext())?.let { vm ->
 //            vm.timerData.observe(viewLifecycleOwner, { ob ->

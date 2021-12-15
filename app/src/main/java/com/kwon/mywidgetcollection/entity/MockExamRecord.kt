@@ -14,7 +14,7 @@ data class MockExamRecord(
     val id: Long? = null,
     var title: String = Default.EMPTY_STR,
     var description: String = Default.EMPTY_STR,
-    var create_at: Long = Default.EMPTY_LONG,
+    var create_at: Long = System.currentTimeMillis(),
     var subjects: String = Default.EMPTY_STR
 ) {
     data class MockExamDataList(var subjects: ArrayList<MockExamData> = ArrayList<MockExamData>())

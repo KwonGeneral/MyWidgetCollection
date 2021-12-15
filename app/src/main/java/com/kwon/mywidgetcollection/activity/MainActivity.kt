@@ -2,6 +2,7 @@ package com.kwon.mywidgetcollection.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import com.kwon.mywidgetcollection.contains.ScreenDefine
 import com.kwon.mywidgetcollection.viewmodel.ScreenViewModel
 import com.kwon.mywidgetcollection.R
@@ -12,6 +13,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         ScreenViewModel.getInstance(this).screenStatus.observe(this, { fragment_name ->
             changeFragment(fragment_name)
         })
@@ -27,7 +30,14 @@ class MainActivity : AppCompatActivity() {
                     ScreenDefine.SCHEDULE_FRAGMENT -> ScheduleFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                     ScreenDefine.LIFE_RECORD_FRAGMENT -> LifeRecordFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                     ScreenDefine.CALENDAR_FRAGMENT -> CalendarFragment().apply { ft.replace(R.id.main_frag, this).commit() }
-                    ScreenDefine.MODE_FRAGMENT -> ModeFragment().apply { ft.replace(R.id.main_frag, this).commit() }
+                    ScreenDefine.MODE_FRAGMENT ->
+                    {
+                        ModeFragment().show(ft,"모의고사 셋팅")
+                        //ModeFragment().apply { ft.replace(R.id.main_frag, this).commit() }
+                    }
+                    ScreenDefine.MODE_START_FRAGMENT -> {
+                        ModeStartFragment().show(ft, "모의고사 시작")
+                    }
                     ScreenDefine.SETTING_FRAGMENT -> SettingFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                     else -> ScheduleFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                 }

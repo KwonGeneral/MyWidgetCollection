@@ -19,9 +19,9 @@ class BottomNavigationItem(context: Context?, attrs: AttributeSet?) : LinearLayo
     lateinit var action: String
     lateinit var imageView: AppCompatImageView
     lateinit var textView:AppCompatTextView
-    private lateinit var defaultColor: String
-    private lateinit var focusColor: String
-    private lateinit var disableColor: String
+    var defaultColor: String? = null
+    var focusColor: String? = null
+    var disableColor: String? = null
     private val Int.dp: Int get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
     init {
@@ -116,11 +116,15 @@ class BottomNavigationItem(context: Context?, attrs: AttributeSet?) : LinearLayo
     override fun setChecked(checked: Boolean) {
         if (checked != mChecked) {
             if(checked) {
-                imageView.imageTintList = ColorStateList.valueOf(Color.parseColor(focusColor))
-                textView.setTextColor(Color.parseColor(focusColor))
+                if(focusColor != null) {
+                    imageView.imageTintList = ColorStateList.valueOf(Color.parseColor(focusColor))
+                    textView.setTextColor(Color.parseColor(focusColor))
+                }
             } else {
-                imageView.imageTintList = ColorStateList.valueOf(Color.parseColor(defaultColor))
-                textView.setTextColor(Color.parseColor(defaultColor))
+                if(defaultColor != null) {
+                    imageView.imageTintList = ColorStateList.valueOf(Color.parseColor(defaultColor))
+                    textView.setTextColor(Color.parseColor(defaultColor))
+                }
             }
             mChecked = checked
             refreshDrawableState()

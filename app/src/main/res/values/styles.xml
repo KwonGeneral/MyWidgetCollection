@@ -97,13 +97,11 @@
     <style name="UPlus.LargeBody" parent="Base.TextAppearance.AppCompat.Body1">
         <item name="android:fontFamily">@font/noto_bold</item>
         <item name="android:textSize">13sp</item>
-        <item name="android:textAlignment">center</item>
     </style>
 
     <style name="UPlus.SmallBody" parent="Base.TextAppearance.AppCompat.Body1">
         <item name="android:fontFamily">@font/noto_regular</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:textAlignment">center</item>
     </style>
 
     <style name="UPlus.Button" parent="Base.TextAppearance.AppCompat.Button">
