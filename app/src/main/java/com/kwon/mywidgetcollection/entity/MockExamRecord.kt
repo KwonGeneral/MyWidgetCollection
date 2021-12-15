@@ -17,24 +17,23 @@ data class MockExamRecord(
     var create_at: Long = Default.EMPTY_LONG,
     var subjects: String = Default.EMPTY_STR
 ) {
-    fun check(str: String) {
-        Log.d("TEST", "! MockExamRecord - $str ! -> id: ${this.id} / title: ${this.title} / description: ${this.description} / create_at: ${this.create_at} /\n subjects: ${this.subjects}")
+    data class MockExamDataList(var subjects: ArrayList<MockExamData> = ArrayList<MockExamData>())
+    data class MockExamData(val name: String, var range: Long, var point: Int) {
+        override fun toString(): String {
+            return name
+        }
     }
 
     fun add(mockExamData: MockExamData):Boolean {
         val fromDataJson:MockExamDataList
-        var tempMockList = MockExamDataList()
+        val tempMockList = MockExamDataList()
 
-        Log.d("TEST", "ADD mockExamData -> name : ${mockExamData.name} / range : ${mockExamData.range} / point : ${mockExamData.point}")
         if(this.subjects == Default.EMPTY_STR) {
             tempMockList.subjects.add(mockExamData)
             this.subjects = Gson().toJson(tempMockList)
-            Log.d("TEST", "ADD Null - toDataJson : ${Gson().toJson(tempMockList)}")
             fromDataJson = Gson().fromJson(this.subjects, MockExamDataList::class.java)
-            Log.d("TEST", "ADD Null - fromDataJson : $fromDataJson")
         } else {
             fromDataJson = Gson().fromJson(this.subjects, MockExamDataList::class.java)
-            Log.d("TEST", "ADD NOT Null - fromDataJson : $fromDataJson")
         }
 
         fromDataJson?.let {
@@ -43,30 +42,9 @@ data class MockExamRecord(
                     return false
                 }
             }
-            Log.d("TEST", "ADD - mockExamData : $mockExamData")
             it.subjects.add(mockExamData)
             this.subjects = Gson().toJson(it)
-            Log.d("TEST", "ADD - it.subjects : ${it.subjects}")
-            Log.d("TEST", "ADD - this.subjects : ${this.subjects}")
         }
-
-//        this.subjects = Gson().toJson(mockExamData)
-
-//        Log.d("TEST", "fromJson -> ${Gson().fromJson(mockExamData, MockExamDataList::class.java)}")
-//        Gson().fromJson(subjects, MockExamDataList::class.java)?.let {
-//            for(mc_data in it.subjects) {
-//                if(mockExamData.toString() == mc_data.toString()) {
-//                    return false
-//                }
-//            }
-//            Log.d("TEST", "ADD - mockExamData : $mockExamData")
-//            it.subjects.add(mockExamData)
-//            this.subjects = Gson().toJson(it)
-//            Log.d("TEST", "ADD - it.subjects : ${it.subjects}")
-//            Log.d("TEST", "ADD - this.subjects : ${this.subjects}")
-//        }
-
-        check("add")
         return true
     }
 
@@ -81,8 +59,6 @@ data class MockExamRecord(
                 }
             }
         }
-
-        check("remove")
         return false
     }
 
@@ -97,8 +73,6 @@ data class MockExamRecord(
                 }
             }
         }
-
-        check("modify")
         return false
     }
 
@@ -106,15 +80,6 @@ data class MockExamRecord(
         Gson().fromJson(subjects, MockExamDataList::class.java)?.let {
             return it
         }
-
-        check("getSubject")
         return null
-    }
-
-    data class MockExamDataList(var subjects: ArrayList<MockExamData> = ArrayList<MockExamData>())
-    data class MockExamData(val name: String, var range: Long, var point: Int) {
-        override fun toString(): String {
-            return name
-        }
     }
 }

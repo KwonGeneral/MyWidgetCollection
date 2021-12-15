@@ -45,17 +45,17 @@ class ModeFragment : Fragment() {
             Log.d("MOCK", "시험 스케쥴 입력: 국어 1초 / 영어 2초 / 수학 3초 / 사회 1초 / 과학 2초")
 
             mock_start_btn.setOnClickListener {
-                vm.startMockExam()
+                vm.timerStart()
                 Log.d("MOCK", "모의고사 시작하기")
             }
 
             mock_pause_btn.setOnClickListener {
-                vm.pauseExam()
+                vm.timerPause()
                 Log.d("MOCK", "모의고사 일시정지")
             }
 
             mock_stop_btn.setOnClickListener {
-                vm.examFinish()
+                vm.timerStop()
                 Log.d("MOCK", "모의고사 중지하기")
                 for(k in RoomDataBase.getInstance(requireContext())?.mockExamRecordService()?.readAll(100)!!) {
 //                    if(k.id == 0L) {  // 삭제
@@ -71,14 +71,14 @@ class ModeFragment : Fragment() {
             })
 
             vm.timerData.observe(viewLifecycleOwner, { ob ->
-                if(now_subject_text.text.toString() != ob.timerSubjectName) {
-                    now_subject_text.text = ob.timerSubjectName
-                    timer_hour_text.text = "30"
-                    timer_min_text.text = "00"
-                    timer_second_text.text = "00"
-                }
-
                 ob?.let {  timerData ->
+                    if(now_subject_text.text.toString() != ob.timerSubject) {
+                        now_subject_text.text = ob.timerSubject
+                        timer_hour_text.text = "30"
+                        timer_min_text.text = "00"
+                        timer_second_text.text = "00"
+                    }
+
                     Log.d("Timer", "timerData 값 변동 : ${timerData.time}")
                     if(timerData.time == 0L) {
                         return@observe
