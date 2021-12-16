@@ -82,4 +82,11 @@ data class MockExamRecord(
         }
         return null
     }
+
+    fun getSubjectCount(): Int {
+        Gson().fromJson(subjects, MockExamDataList::class.java)?.let {
+            return it.subjects.size
+        }
+        return 0
+    }
 }

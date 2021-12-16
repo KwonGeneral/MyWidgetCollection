@@ -41,6 +41,10 @@
         <item name="android:textColor">@color/cool_black</item>
     </style>
 
+    <style name="me_style" parent="item_sub_title">
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
     <!-- LG UPlus -->
     <style name="UPlus.Button.Contained" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textAppearance">@style/UPlus.Button</item>

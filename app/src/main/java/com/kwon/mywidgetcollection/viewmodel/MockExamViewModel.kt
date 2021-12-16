@@ -85,6 +85,7 @@ class MockExamViewModel(val context: Context) {
     fun delete(record: MockExamRecord) {
         record?.id?.let {
             deleteMockExamRecord(it)
+            update()
         }
     }
 

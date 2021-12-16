@@ -2,6 +2,7 @@ package com.kwon.mywidgetcollection.viewmodel
 
 import android.content.Context
 import com.kwon.mywidgetcollection.data.LinearTapItemData
+import com.kwon.mywidgetcollection.data.MockExamItemData
 import navigation.LinearTapItem
 
 class WidgetViewModel(val context: Context) {
