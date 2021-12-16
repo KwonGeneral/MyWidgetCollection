@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.kwon.mywidgetcollection.R
 import com.kwon.mywidgetcollection.adapter.MockExamAdapter
@@ -52,14 +53,40 @@ class ModeFragment : DialogFragment() {
 
         MockExamViewModel.releaseInstace()
         MockExamViewModel.getInstance(requireContext())?.let { vm ->
-            vm.examData.observe(viewLifecycleOwner, {
-                for(k in it) {
+            vm.examData.observe(viewLifecycleOwner, { data ->
+                mode_history_recycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                mode_history_recycler.adapter = MockExamAdapter(requireContext(), data)
+                for(k in data) {
                     Log.d(
                         "TEST",
                         "전체 데이터 -> id: ${k.id} / title: ${k.title} / subjects: ${k.subjects} / create_at: ${k.create_at}"
                     )
                 }
             })
+
+            mode_setting_add_btn.setOnClickListener {
+                if(mode_schedule_1.visibility == View.VISIBLE) {
+                    mode_schedule_2.visibility = View.VISIBLE
+                }else if(mode_schedule_2.visibility == View.VISIBLE) {
+                    mode_schedule_3.visibility = View.VISIBLE
+                }else if(mode_schedule_3.visibility == View.VISIBLE) {
+                    mode_schedule_4.visibility = View.VISIBLE
+                }else if(mode_schedule_4.visibility == View.VISIBLE) {
+                    mode_schedule_5.visibility = View.VISIBLE
+                }
+            }
+
+            mode_setting_remove_btn.setOnClickListener {
+                if(mode_schedule_5.visibility == View.GONE) {
+                    mode_schedule_4.visibility = View.GONE
+                }else if(mode_schedule_4.visibility == View.GONE) {
+                    mode_schedule_3.visibility = View.GONE
+                }else if(mode_schedule_3.visibility == View.GONE) {
+                    mode_schedule_2.visibility = View.GONE
+                }else if(mode_schedule_2.visibility == View.GONE) {
+                    mode_schedule_1.visibility = View.GONE
+                }
+            }
 
             mode_setting_start_btn.setOnClickListener {
                 vm.setMockTitle(mode_setting_layout_title_edit.text.toString())

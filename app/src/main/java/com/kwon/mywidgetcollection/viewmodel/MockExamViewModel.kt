@@ -29,6 +29,7 @@ class MockExamViewModel(val context: Context) {
     var examData = MutableLiveData<List<MockExamRecord>>()
     var tempMockExamRecord = MutableLiveData<MockExamRecord>()
     var timerData = MutableLiveData<TimerData>()
+    var detail_data = MutableLiveData<MockExamRecord>()
     private var sortDESC: Boolean = false
 
     companion object {
@@ -399,6 +400,17 @@ class MockExamViewModel(val context: Context) {
                 }
             }
             return null
+        }
+
+        fun getCurrentIndex(): Int {
+            timerRecord.getSubject()?.let {
+                for (k in it.subjects) {
+                    if (k.name == timerSubject) {
+                        return (it.subjects.indexOf(k) + 1)
+                    }
+                }
+            }
+            return 1
         }
     }
 }

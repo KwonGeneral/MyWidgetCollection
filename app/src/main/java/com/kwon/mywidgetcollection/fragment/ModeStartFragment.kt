@@ -52,8 +52,8 @@ class ModeStartFragment : DialogFragment() {
             Log.d("TEST", "- 모의고사 시작 프레그먼트 - ")
             mode_start_title.text = vm.tempMockExamRecord.value?.title
 
-            vm.examData.observe(viewLifecycleOwner, {
-                for(k in it) {
+            vm.examData.observe(viewLifecycleOwner, { ob ->
+                for(k in ob) {
                     Log.d(
                         "TEST",
                         "전체 데이터 -> id: ${k.id} / title: ${k.title} / subjects: ${k.subjects} / create_at: ${k.create_at}"
@@ -63,7 +63,10 @@ class ModeStartFragment : DialogFragment() {
 
             vm.timerData.observe(viewLifecycleOwner, { ob ->
                 ob?.let {
-                    mode_start_subject.text = ob.timerSubject
+                    ob.getCurrentIndex()?.let {
+
+                    }
+                    mode_start_subject.text = "${ob.getCurrentIndex()}교시 ${ob.timerSubject} 영역"
                     var sec:Long = ob.remain_time/1000
                     val min:Long = Math.floor((sec/60).toDouble()).roundToLong()
                     sec -= min * 60
@@ -83,6 +86,7 @@ class ModeStartFragment : DialogFragment() {
             }
             mode_stop_btn.setOnClickListener {
                 vm.timerStop()
+                dismiss()
             }
         }
 

@@ -7,6 +7,7 @@ class ScreenDefine {
         const val CALENDAR_FRAGMENT = "CALENDAR"
         const val MODE_FRAGMENT = "MODE"
         const val MODE_START_FRAGMENT = "MODE_START"
+        const val MODE_DETAIL_FRAGMENT = "MODE_DETAIL"
         const val SETTING_FRAGMENT = "SETTING"
     }
 }

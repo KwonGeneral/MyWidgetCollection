@@ -30,14 +30,9 @@ class MainActivity : AppCompatActivity() {
                     ScreenDefine.SCHEDULE_FRAGMENT -> ScheduleFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                     ScreenDefine.LIFE_RECORD_FRAGMENT -> LifeRecordFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                     ScreenDefine.CALENDAR_FRAGMENT -> CalendarFragment().apply { ft.replace(R.id.main_frag, this).commit() }
-                    ScreenDefine.MODE_FRAGMENT ->
-                    {
-                        ModeFragment().show(ft,"모의고사 셋팅")
-                        //ModeFragment().apply { ft.replace(R.id.main_frag, this).commit() }
-                    }
-                    ScreenDefine.MODE_START_FRAGMENT -> {
-                        ModeStartFragment().show(ft, "모의고사 시작")
-                    }
+                    ScreenDefine.MODE_FRAGMENT -> { ModeFragment().show(ft,"모의고사 셋팅") }
+                    ScreenDefine.MODE_START_FRAGMENT -> { ModeStartFragment().show(ft, "모의고사 시작") }
+                    ScreenDefine.MODE_DETAIL_FRAGMENT -> { ModeDetailFragment().show(ft, "모의고사 상세정보") }
                     ScreenDefine.SETTING_FRAGMENT -> SettingFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                     else -> ScheduleFragment().apply { ft.replace(R.id.main_frag, this).commit() }
                 }

@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="닫기"
-            style="@style/sub_headline"
+            style="@style/item_title"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +55,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="300dp"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -155,6 +156,8 @@
                         >
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/mode_schedule_1"
+                            android:visibility="visible"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <androidx.appcompat.widget.AppCompatTextView
@@ -203,6 +206,8 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/mode_schedule_2"
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp">
@@ -253,6 +258,8 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/mode_schedule_3"
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp">
@@ -300,6 +307,8 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/mode_schedule_4"
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp">
@@ -347,6 +356,8 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/mode_schedule_5"
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp">
@@ -428,6 +439,9 @@
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/background_record"
                     app:layout_constraintTop_toBottomOf="@id/mode_history_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
